@@ -1,5 +1,7 @@
 import {  useState, useEffect } from 'react';
 import data from '../data.json';
+import { db , auth} from "../Firebase-config"; 
+import { doc, updateDoc,setDoc, getDoc, } from "firebase/firestore";
 
 const TestLevel = () => {
     const [recognizedText, setRecognizedText] = useState('');
@@ -12,6 +14,7 @@ const TestLevel = () => {
     const [randomWord, setRandomWord] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
+    const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
 
     const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
     recognition.continuous = true;
@@ -72,7 +75,57 @@ const TestLevel = () => {
             setIncorrectCount(prevCount => prevCount + 1);
             setConfirmation('Incorrect. Try again.');
         }
+        setWordCount(prevCount => prevCount + 1); 
+        
     };
+
+
+    
+    
+    
+    const saveTotalCorrectGuesses = async () => {
+        console.log("Save button clicked");
+        console.log("Current user:", auth.currentUser);
+        if (auth.currentUser) {
+            const userId = auth.currentUser.uid;
+            const newTotalCorrectGuesses = totalCorrectGuesses + correctCount;
+            console.log("New total correct guesses:", newTotalCorrectGuesses);
+            
+            try {
+                const docRef = doc(db, "Guesses", userId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+                    console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+                    if (currentTotalCorrectGuesses !== newTotalCorrectGuesses) {
+                        await updateDoc(docRef, {
+                            totalCorrectGuesses: newTotalCorrectGuesses
+                        });
+                        console.log("Total correct guesses updated successfully");
+                        setTotalCorrectGuesses(newTotalCorrectGuesses); 
+                    } else {
+                        console.log("Total correct guesses in Firebase is already up to date");
+                    }
+                } else {
+                    await setDoc(docRef, {
+                        totalCorrectGuesses: newTotalCorrectGuesses
+                    });
+                    console.log("Document added with ID: ", docRef.id);
+                    console.log("Total correct guesses added successfully");
+                    setTotalCorrectGuesses(newTotalCorrectGuesses); 
+                }
+            } catch (error) {
+                console.error("Error saving total correct guesses: ", error);
+            }
+    
+            // Optionally reset correctCount after saving
+            setCorrectCount(0);
+        }
+    };
+    
+    
+    
 
     const playText = () => {
         const textToRead = randomWord.trim(); 
@@ -105,13 +158,9 @@ const TestLevel = () => {
         const randomIndex = Math.floor(Math.random() * data.words.length);
         setRandomWord(data.words[randomIndex]);
     };
-
     
     return (
       <>
-        <div className="admin-dashboard-container">
-          {/* <button className="back-button" onClick={goBack}>Back</button> */}
-        </div>
         <div className="container">
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
@@ -129,6 +178,7 @@ const TestLevel = () => {
           <button onClick={stopListening}>Stop Listening</button>
           <button onClick={playText}>Play Text</button>
           <button onClick={resetGame}>Reset</button>
+          <button onClick={saveTotalCorrectGuesses}>Save</button>
 
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
@@ -160,6 +210,7 @@ const TestLevel = () => {
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
+          <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
