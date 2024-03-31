@@ -21,10 +21,10 @@ const TestLevel = () => {
     recognition.continuous = true;
     recognition.interimResults = true;
 
-    useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * data.words.length);
-        setRandomWord(data.words[randomIndex]);
-    }, []); 
+    // useEffect(() => {
+    //     const randomIndex = Math.floor(Math.random() * data.words.length);
+    //     setRandomWord(data.words[randomIndex]);
+    // }, []); 
 
     useEffect(() => {
         if (data && data.words && data.words.length > 0) {
@@ -65,6 +65,14 @@ const TestLevel = () => {
         recognition.start();
     };
 
+    const NextWord = ()=>{
+        const randomIndex = Math.floor(Math.random() * data.words.length);
+        setRandomWord(data.words[randomIndex]);
+        setRecognizedText('');
+        setConfirmation('');
+        recognition.start();
+    }
+
     const stopListening = () => {
         recognition.stop();
         const userInput = recognizedText.trim().toLowerCase();
@@ -77,6 +85,7 @@ const TestLevel = () => {
             setConfirmation('Incorrect. Try again.');
         }
         setWordCount(prevCount => prevCount + 1); 
+        
         
     };
 
@@ -198,6 +207,7 @@ const TestLevel = () => {
           <button onClick={playText}>Play Text</button>
           <button onClick={resetGame}>Reset</button>
           <button onClick={saveTotalCorrectGuesses}>Save</button>
+          <button onClick={NextWord}>Next</button>
 
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
