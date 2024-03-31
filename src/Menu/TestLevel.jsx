@@ -15,6 +15,7 @@ const TestLevel = () => {
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
+    // const [currentTotalCorrectGuesses, setCurrentTotalCorrectGuesses] = useState(0);
 
     const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
     recognition.continuous = true;
@@ -85,7 +86,7 @@ const TestLevel = () => {
     
     const saveTotalCorrectGuesses = async () => {
         console.log("Save button clicked");
-        console.log("Current user:", auth.currentUser);
+        console.log("Current user:", auth.currentUser)
         if (auth.currentUser) {
             const userId = auth.currentUser.uid;
             const newTotalCorrectGuesses = totalCorrectGuesses + correctCount;
@@ -98,7 +99,7 @@ const TestLevel = () => {
                     const data = docSnap.data();
                     const currentTotalCorrectGuesses = data.totalCorrectGuesses;
                     console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                    if (currentTotalCorrectGuesses !== newTotalCorrectGuesses) {
+                    if (currentTotalCorrectGuesses <= newTotalCorrectGuesses) {
                         await updateDoc(docRef, {
                             totalCorrectGuesses: newTotalCorrectGuesses
                         });
@@ -123,9 +124,26 @@ const TestLevel = () => {
             setCorrectCount(0);
         }
     };
-    
-    
-    
+    // useEffect(() => {
+    //     const fetchCurrentTotalCorrectGuesses = async () => {
+    //         try {
+    //             const userId = auth.currentUser.uid;
+    //             const docRef = doc(db, "Guesses", userId);
+    //             const docSnap = await getDoc(docRef);
+    //             if (docSnap.exists()) {
+    //                 const data = docSnap.data();
+    //                 setCurrentTotalCorrectGuesses(data.totalCorrectGuesses);
+    //                 console.log("Initial current total correct guesses from Firebase:", currentTotalCorrectGuesses);
+    //             } else {
+    //                 console.log("Document does not exist in Firebase. Initializing currentTotalCorrectGuesses to 0.");
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching current total correct guesses: ", error);
+    //         }
+    //     };
+
+    //     fetchCurrentTotalCorrectGuesses();
+    // }, []);
 
     const playText = () => {
         const textToRead = randomWord.trim(); 
@@ -158,6 +176,7 @@ const TestLevel = () => {
         const randomIndex = Math.floor(Math.random() * data.words.length);
         setRandomWord(data.words[randomIndex]);
     };
+    console.log()
     
     return (
       <>
@@ -211,6 +230,7 @@ const TestLevel = () => {
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
           <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
+           {/* <p>Current Total Correct Guesses: {currentTotalCorrectGuesses}</p> */}
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
