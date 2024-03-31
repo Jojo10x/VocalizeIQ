@@ -1,5 +1,5 @@
 import {  useState, useEffect } from 'react';
-import data from '../data.json';
+import data from '../Data/data.json';
 import { db , auth} from "../Firebase-config"; 
 import { doc, updateDoc,setDoc, getDoc, } from "firebase/firestore";
 
@@ -178,7 +178,7 @@ const TestLevel = () => {
           <button onClick={saveTotalCorrectGuesses}>Save</button>
           <button onClick={NextWord}>Next</button>
 
-          {/* <label htmlFor="speechRate">Speech Rate:</label>
+          <label htmlFor="speechRate">Speech Rate:</label>
           <input
             type="range"
             id="speechRate"
@@ -196,7 +196,7 @@ const TestLevel = () => {
             max="2"
             step="0.1"
             defaultValue="1"
-          /> */}
+          />
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
