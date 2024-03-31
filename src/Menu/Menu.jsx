@@ -19,6 +19,10 @@ function Menu() {
       const goPro = () => {
         navigate('./prounciation');
       };
+      const goGame = () => {
+        navigate('./game');
+      };
+     
      
   return (
     <div className="admin-dashboard-container">
@@ -28,7 +32,7 @@ function Menu() {
       <button>Instructions</button>
       <button onClick={goTest}>Test</button>
       <button onClick={goPro}>Prouncition</button>
-      <button></button>
+      <button onClick={goGame}>Game</button>
     </div>
   );
 }

@@ -15,16 +15,10 @@ const TestLevel = () => {
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
-    // const [currentTotalCorrectGuesses, setCurrentTotalCorrectGuesses] = useState(0);
 
     const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
     recognition.continuous = true;
     recognition.interimResults = true;
-
-    // useEffect(() => {
-    //     const randomIndex = Math.floor(Math.random() * data.words.length);
-    //     setRandomWord(data.words[randomIndex]);
-    // }, []); 
 
     useEffect(() => {
         if (data && data.words && data.words.length > 0) {
@@ -89,10 +83,6 @@ const TestLevel = () => {
         
     };
 
-
-    
-    
-    
     const saveTotalCorrectGuesses = async () => {
         console.log("Save button clicked");
         console.log("Current user:", auth.currentUser)
@@ -133,27 +123,6 @@ const TestLevel = () => {
             setCorrectCount(0);
         }
     };
-    // useEffect(() => {
-    //     const fetchCurrentTotalCorrectGuesses = async () => {
-    //         try {
-    //             const userId = auth.currentUser.uid;
-    //             const docRef = doc(db, "Guesses", userId);
-    //             const docSnap = await getDoc(docRef);
-    //             if (docSnap.exists()) {
-    //                 const data = docSnap.data();
-    //                 setCurrentTotalCorrectGuesses(data.totalCorrectGuesses);
-    //                 console.log("Initial current total correct guesses from Firebase:", currentTotalCorrectGuesses);
-    //             } else {
-    //                 console.log("Document does not exist in Firebase. Initializing currentTotalCorrectGuesses to 0.");
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching current total correct guesses: ", error);
-    //         }
-    //     };
-
-    //     fetchCurrentTotalCorrectGuesses();
-    // }, []);
-
     const playText = () => {
         const textToRead = randomWord.trim(); 
         const synth = window.speechSynthesis;
@@ -209,7 +178,7 @@ const TestLevel = () => {
           <button onClick={saveTotalCorrectGuesses}>Save</button>
           <button onClick={NextWord}>Next</button>
 
-          <label htmlFor="speechRate">Speech Rate:</label>
+          {/* <label htmlFor="speechRate">Speech Rate:</label>
           <input
             type="range"
             id="speechRate"
@@ -227,7 +196,7 @@ const TestLevel = () => {
             max="2"
             step="0.1"
             defaultValue="1"
-          />
+          /> */}
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
@@ -240,7 +209,6 @@ const TestLevel = () => {
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
           <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
-           {/* <p>Current Total Correct Guesses: {currentTotalCorrectGuesses}</p> */}
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
