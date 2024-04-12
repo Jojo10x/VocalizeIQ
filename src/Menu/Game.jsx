@@ -1,5 +1,7 @@
 import {  useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { db , auth} from "../Firebase-config"; 
+import { doc, setDoc, getDoc ,onSnapshot} from "firebase/firestore";
 import data from '../Data/tonguetwisster.json';
 import '../App.css'
 
@@ -15,6 +17,7 @@ function Game() {
     const [randomWord, setRandomWord] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
+    const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
     const navigate = useNavigate();
 
     const goBack = () => {
@@ -88,6 +91,97 @@ function Game() {
         
         
     };
+    const [gameData, setGameData] = useState({});
+
+    useEffect(() => {
+        const fetchGameData = async () => {
+            if (auth.currentUser) {
+                const userId = auth.currentUser.uid;
+                const docRef = doc(db, "Game", userId);
+
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        setGameData(data);
+                    }
+                } catch (error) {
+                    console.error("Error fetching game data: ", error);
+                }
+
+                const unsubscribe = onSnapshot(docRef, (doc) => {
+                    if (doc.exists()) {
+                        const data = doc.data();
+                        setGameData(data);
+                    }
+                });
+
+                return () => unsubscribe(); // Cleanup function to unsubscribe when component unmounts
+            }
+        };
+
+        fetchGameData();
+    }, []);
+    const saveTotalCorrectGuesses = async () => {
+      console.log("Save button clicked");
+      console.log("Current user:", auth.currentUser);
+      
+      if (auth.currentUser) {
+          const userId = auth.currentUser.uid;
+          const currentDate = new Date().toISOString(); // Get current date and time
+          
+          try {
+              const docRef = doc(db, "Game", userId);
+              const docSnap = await getDoc(docRef);
+              let newTotalCorrectGuesses = 0;
+              let updateData = {};
+              
+              if (docSnap.exists()) {
+                  const data = docSnap.data();
+                  const lastUpdatedDate = data.lastUpdated;
+                  
+                  if (lastUpdatedDate === currentDate) {
+                      // If the data is already up to date for today, retrieve the total correct guesses
+                      newTotalCorrectGuesses = data.totalCorrectGuesses;
+                  } else {
+                      // If the data is not up to date for today, calculate the new total correct guesses
+                      newTotalCorrectGuesses = correctCount;
+                  }
+                  // Copy the existing data
+                  updateData = { ...data };
+              } else {
+                  // If the document does not exist, set the new total correct guesses to the current correct count
+                  newTotalCorrectGuesses = correctCount;
+              }
+  
+              // Add the new entry for the current date and time
+              updateData[currentDate] = {
+                  totalCorrectGuesses: correctCount,
+                  // You can add other fields related to the date here if needed
+              };
+  
+              // Update or create the document with the new total correct guesses for the current date
+              updateData.totalCorrectGuesses = newTotalCorrectGuesses;
+              updateData.lastUpdated = currentDate;
+  
+              await setDoc(docRef, updateData);
+  
+              console.log("Total correct guesses updated successfully for today");
+              setTotalCorrectGuesses(newTotalCorrectGuesses);
+          } catch (error) {
+              console.error("Error saving total correct guesses: ", error);
+          }
+  
+          // Reset correctCount after saving
+          setCorrectCount(0);
+      }
+  };
+  
+  
+  
+  
+  
+  
 
     const playText = () => {
         const textToRead = randomWord.trim(); 
@@ -125,6 +219,7 @@ function Game() {
     return (
       <>
         <div className="container">
+
         <button className="back-button" onClick={goBack}>Back</button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
@@ -141,6 +236,7 @@ function Game() {
 
           <button onClick={startListening}>Start Listening</button>
           <button onClick={stopListening}>Stop Listening</button>
+          <button onClick={saveTotalCorrectGuesses}>Save</button>
           <button onClick={playText}>Play Text</button>
           <button onClick={resetGame}>Reset</button>
           <button onClick={NextWord}>Next</button>
@@ -175,10 +271,22 @@ function Game() {
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
+          <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
+          <h1>Game Data</h1>
+            <p>Total Correct Guesses: {gameData.totalCorrectGuesses || 0}</p>
+            <div>
+                {Object.entries(gameData).map(([date, data]) => (
+                    <div key={date}>
+                        <p>Date: {date}</p>
+                        <p>Total Correct Guesses: {data.totalCorrectGuesses}</p>
+                        {/* You can display other fields related to the date here */}
+                    </div>
+                ))}
+            </div>
         </div>
       </>
     );
