@@ -1,4 +1,5 @@
 import {  useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import data from '../Data/tonguetwisster.json';
 import '../App.css'
 
@@ -14,6 +15,12 @@ function Game() {
     const [randomWord, setRandomWord] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
+    const navigate = useNavigate();
+
+    const goBack = () => {
+      navigate(-1);
+    };
+
 
     const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
     recognition.continuous = true;
@@ -118,6 +125,7 @@ function Game() {
     return (
       <>
         <div className="container">
+        <button className="back-button" onClick={goBack}>Back</button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
