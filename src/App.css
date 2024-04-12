@@ -62,12 +62,15 @@ button:hover {
   font-size: 18px;
   color: #ffa500;
 }
+#randomWord {
+  font-size: 64px; /* This change is kept from the "test-level" branch */
+}
 
 h1 {
   color: #4CAF50;
 }
 
 .container {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 600px; /* This change is discarded from the "master" branch */
+  margin: 0 auto; /* This change is discarded from the "master" branch */
 }

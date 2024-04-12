@@ -13,21 +13,27 @@ function Menu() {
     const goForward = () => {
         navigate('./home');
       };
+
+      const goTest = () => {
+        navigate('./test');
+      };
+      const goPro = () => {
+        navigate('./prounciation');
+      };
+      const goGame = () => {
+        navigate('./game');
+      };
+     
+     
   return (
     <div className="admin-dashboard-container">
       <button className="back-button" onClick={goBack}>Back</button>
       <button className="forward-button" onClick={goForward}>Forward</button>
-      <h1>Instructions</h1>
-      <SpeechRecognitionApp />
-
-
-      <h1>Test Level</h1>
-      <button></button>
-      <h1>Practice Pronounction</h1>
-      <button></button>
-      <h1>Practice Speaking</h1>
-      <button></button>
-
+      <h1>Hello I am the Menu</h1>
+      <button>Instructions</button>
+      <button onClick={goTest}>Test</button>
+      <button onClick={goPro}>Prouncition</button>
+      <button onClick={goGame}>Game</button>
     </div>
   );
 }
