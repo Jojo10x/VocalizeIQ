@@ -90,6 +90,39 @@ function Prouncition() {
         
         
     };
+    useEffect(() => {
+        const fetchTotalCorrectGuesses = async () => {
+            if (auth.currentUser) {
+                const userId = auth.currentUser.uid;
+                const docRef = doc(db, "Guesses", userId);
+                
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+                        console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+                        setTotalCorrectGuesses(currentTotalCorrectGuesses);
+                    }
+                } catch (error) {
+                    console.error("Error fetching total correct guesses: ", error);
+                }
+            } else {
+                console.warn("User is not authenticated."); 
+            }
+        };
+
+        fetchTotalCorrectGuesses();
+
+     
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                fetchTotalCorrectGuesses(); 
+            }
+        });
+
+        return () => unsubscribe();
+    }, []); 
 
     const saveTotalCorrectGuesses = async () => {
         console.log("Save button clicked");
@@ -167,6 +200,7 @@ function Prouncition() {
     return (
       <>
         <div className="container">
+        <div id="totalCorrectGuesses">Total Guesses: <h1>{totalCorrectGuesses}</h1></div> 
         <button className="back-button" onClick={goBack}>Back</button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
@@ -217,7 +251,7 @@ function Prouncition() {
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
-          <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
+        
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
