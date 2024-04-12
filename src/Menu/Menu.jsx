@@ -22,6 +22,9 @@ function Menu() {
       const goGame = () => {
         navigate('./game');
       };
+      const goChoice = () => {
+        navigate('./choice');
+      };
      
      
   return (
@@ -33,6 +36,7 @@ function Menu() {
       <button onClick={goTest}>Test</button>
       <button onClick={goPro}>Prouncition</button>
       <button onClick={goGame}>Game</button>
+      <button onClick={goChoice}>Choice</button>
     </div>
   );
 }

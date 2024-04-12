@@ -1,0 +1,15 @@
+[
+    {
+      "words": ["Good"],
+      "choice": ["God", "Good", "Gulled", "Gold"]
+    },
+    {
+      "words": ["Apple"],
+      "choice": ["App", "Apple", "Apricot", "Artichoke"]
+    },
+    {
+      "words": ["Cat"],
+      "choice": ["Dog", "Cat", "Mouse", "Bird"]
+    }
+  ]
+  

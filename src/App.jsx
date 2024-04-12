@@ -6,6 +6,7 @@ import Home from './Home/Home'
 import TestLevel from './Menu/TestLevel';
 import Prouncition from './Menu/Pronouncition';
 import Game from './Menu/Game';
+import ChoiceGame from './Menu/ChoiceGame';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/menu/test" element={<TestLevel />} />
           <Route path="/menu/prounciation" element={<Prouncition />} />
           <Route path="/menu/game" element={<Game/>} />
+          <Route path="/menu/choice" element={<ChoiceGame/>} />
         </Routes>
       </Router>
     </>
