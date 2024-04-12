@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 // import styles from "./Menu.module.css";
 import '../App.css'
-import SpeechRecognitionApp from './SpeechRecognitionApp';
 
 
 function Menu() {
