@@ -74,3 +74,42 @@ h1 {
   max-width: 600px; /* This change is discarded from the "master" branch */
   margin: 0 auto; /* This change is discarded from the "master" branch */
 }
+
+h1 {
+  font-size: 36px;
+  text-align: center;
+  margin-top: 50px;
+  color: #4CAF50;
+}
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.history-item {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.history-item p:first-child {
+  font-weight: bold;
+  color: #333;
+}
+.total-correct-guesses {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #4CAF50;
+}
+.colorful-text {
+  background: -webkit-linear-gradient(right, #FF416C, #FF4B2B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(to right, #FF416C, #FF4B2B);
+  background-clip: text;
+}

@@ -94,117 +94,106 @@ function Game() {
     const [gameData, setGameData] = useState({});
 
     useEffect(() => {
-        const fetchGameData = async () => {
-            if (auth.currentUser) {
-                const userId = auth.currentUser.uid;
-                const docRef = doc(db, "Game", userId);
+      const fetchGameData = async () => {
+        if (auth.currentUser) {
+          const userId = auth.currentUser.uid;
+          const docRef = doc(db, "Game", userId);
 
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        setGameData(data);
-                    }
-                } catch (error) {
-                    console.error("Error fetching game data: ", error);
-                }
-
-                const unsubscribe = onSnapshot(docRef, (doc) => {
-                    if (doc.exists()) {
-                        const data = doc.data();
-                        setGameData(data);
-                    }
-                });
-
-                return () => unsubscribe(); // Cleanup function to unsubscribe when component unmounts
+          try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              setGameData(data);
             }
-        };
+          } catch (error) {
+            console.error("Error fetching game data: ", error);
+          }
 
-        fetchGameData();
+          const unsubscribe = onSnapshot(docRef, (doc) => {
+            if (doc.exists()) {
+              const data = doc.data();
+              setGameData(data);
+            }
+          });
+
+          return () => unsubscribe();
+        }
+      };
+
+      fetchGameData();
     }, []);
+
     const saveTotalCorrectGuesses = async () => {
       console.log("Save button clicked");
       console.log("Current user:", auth.currentUser);
-      
+
       if (auth.currentUser) {
-          const userId = auth.currentUser.uid;
-          const currentDate = new Date().toISOString(); // Get current date and time
-          
-          try {
-              const docRef = doc(db, "Game", userId);
-              const docSnap = await getDoc(docRef);
-              let newTotalCorrectGuesses = 0;
-              let updateData = {};
-              
-              if (docSnap.exists()) {
-                  const data = docSnap.data();
-                  const lastUpdatedDate = data.lastUpdated;
-                  
-                  if (lastUpdatedDate === currentDate) {
-                      // If the data is already up to date for today, retrieve the total correct guesses
-                      newTotalCorrectGuesses = data.totalCorrectGuesses;
-                  } else {
-                      // If the data is not up to date for today, calculate the new total correct guesses
-                      newTotalCorrectGuesses = correctCount;
-                  }
-                  // Copy the existing data
-                  updateData = { ...data };
-              } else {
-                  // If the document does not exist, set the new total correct guesses to the current correct count
-                  newTotalCorrectGuesses = correctCount;
-              }
-  
-              // Add the new entry for the current date and time
-              updateData[currentDate] = {
-                  totalCorrectGuesses: correctCount,
-                  // You can add other fields related to the date here if needed
-              };
-  
-              // Update or create the document with the new total correct guesses for the current date
-              updateData.totalCorrectGuesses = newTotalCorrectGuesses;
-              updateData.lastUpdated = currentDate;
-  
-              await setDoc(docRef, updateData);
-  
-              console.log("Total correct guesses updated successfully for today");
-              setTotalCorrectGuesses(newTotalCorrectGuesses);
-          } catch (error) {
-              console.error("Error saving total correct guesses: ", error);
+        const userId = auth.currentUser.uid;
+        const currentDate = new Date().toISOString();
+
+        try {
+          const docRef = doc(db, "Game", userId);
+          const docSnap = await getDoc(docRef);
+          let newTotalCorrectGuesses = 0;
+          let updateData = {};
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const lastUpdatedDate = data.lastUpdated;
+
+            if (lastUpdatedDate === currentDate) {
+              newTotalCorrectGuesses = data.totalCorrectGuesses;
+            } else {
+              newTotalCorrectGuesses = correctCount;
+            }
+            updateData = { ...data };
+          } else {
+            newTotalCorrectGuesses = correctCount;
           }
-  
-          // Reset correctCount after saving
-          setCorrectCount(0);
+
+          updateData[currentDate] = {
+            totalCorrectGuesses: correctCount,
+          };
+          updateData.totalCorrectGuesses = newTotalCorrectGuesses;
+          updateData.lastUpdated = currentDate;
+
+          await setDoc(docRef, updateData);
+
+          console.log("Total correct guesses updated successfully for today");
+          setTotalCorrectGuesses(newTotalCorrectGuesses);
+        } catch (error) {
+          console.error("Error saving total correct guesses: ", error);
+        }
+
+        setCorrectCount(0);
       }
-  };
-  
-  
-  
-  
-  
-  
+    };
 
     const playText = () => {
-        const textToRead = randomWord.trim(); 
-        const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(textToRead);
-        utterance.lang = accent;
-        utterance.rate = parseFloat(document.getElementById('speechRate').value);
-        utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
+      const textToRead = randomWord.trim();
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = accent;
+      utterance.rate = parseFloat(document.getElementById("speechRate").value);
+      utterance.pitch = parseFloat(
+        document.getElementById("speechPitch").value
+      );
 
-        setSynthesisStatus('Playing...');
-        synth.cancel(); 
-        synth.speak(utterance);
+      setSynthesisStatus("Playing...");
+      synth.cancel();
+      synth.speak(utterance);
 
-        utterance.onend = () => {
-            setSynthesisStatus('Idle');
-            synth.cancel();
-        };
+      utterance.onend = () => {
+        setSynthesisStatus("Idle");
+        synth.cancel();
+      };
 
-        utterance.onerror = (event) => {
-            setSynthesisStatus('Error');
-            setFeedback('Error occurred during speech synthesis: ' + event.error);
-        };
+      utterance.onerror = (event) => {
+        setSynthesisStatus("Error");
+        setFeedback("Error occurred during speech synthesis: " + event.error);
+      };
     };
+
     const resetGame = () => {
         setWordCount(0);
         setRecognizedText('');
@@ -219,8 +208,9 @@ function Game() {
     return (
       <>
         <div className="container">
-
-        <button className="back-button" onClick={goBack}>Back</button>
+          <button className="back-button" onClick={goBack}>
+            Back
+          </button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
@@ -263,30 +253,47 @@ function Game() {
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
-            <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-            <div id="confirmation" className={correctCount > 0 || incorrectCount > 0 ? (correctCount > 0 ? 'correct' : 'incorrect') : ''}>
-                {confirmation}
-            </div>
+          <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
+          <div
+            id="confirmation"
+            className={
+              correctCount > 0 || incorrectCount > 0
+                ? correctCount > 0
+                  ? "correct"
+                  : "incorrect"
+                : ""
+            }
+          >
+            {confirmation}
+          </div>
           <div id="feedback" style={{ color: "#ffa500" }}>
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
-          <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
+          <div id="totalCorrectGuesses">
+            Total Correct Guesses: {totalCorrectGuesses}
+          </div>
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
-          <h1>Game Data</h1>
-            <p>Total Correct Guesses: {gameData.totalCorrectGuesses || 0}</p>
-            <div>
-                {Object.entries(gameData).map(([date, data]) => (
-                    <div key={date}>
-                        <p>Date: {date}</p>
-                        <p>Total Correct Guesses: {data.totalCorrectGuesses}</p>
-                        {/* You can display other fields related to the date here */}
-                    </div>
-                ))}
+          <h1>History</h1>
+          <div className="container">
+            <p>
+              Total Correct Guesses:{" "}
+              <span id="total-correct-guesses">
+                {gameData.totalCorrectGuesses || 0}
+              </span>
+            </p>
+            <div id="history">
+              {Object.entries(gameData).map(([date, data]) => (
+                <div className="history-item" key={date}>
+                    <p>Date: <span className="colorful-text">{date}</span></p>
+                    <p>Total Correct Guesses: <span className="colorful-text">{data.totalCorrectGuesses}</span></p>
+                </div>
+              ))}
             </div>
+          </div>
         </div>
       </>
     );
