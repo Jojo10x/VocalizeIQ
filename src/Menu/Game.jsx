@@ -139,9 +139,8 @@ function Game() {
 
           if (docSnap.exists()) {
             const data = docSnap.data();
-            const lastUpdatedDate = data.lastUpdated;
 
-            if (lastUpdatedDate === currentDate) {
+            if ( currentDate) {
               newTotalCorrectGuesses = data.totalCorrectGuesses;
             } else {
               newTotalCorrectGuesses = correctCount;
@@ -151,17 +150,16 @@ function Game() {
             newTotalCorrectGuesses = correctCount;
           }
 
-          updateData[currentDate] = {
-            totalCorrectGuesses: correctCount,
-          };
-          updateData.totalCorrectGuesses = newTotalCorrectGuesses;
-          updateData.lastUpdated = currentDate;
+          if (correctCount > 0) {
+            updateData[currentDate] = {
+              totalCorrectGuesses: correctCount,
+            };
 
           await setDoc(docRef, updateData);
 
           console.log("Total correct guesses updated successfully for today");
           setTotalCorrectGuesses(newTotalCorrectGuesses);
-        } catch (error) {
+        } } catch (error) {
           console.error("Error saving total correct guesses: ", error);
         }
 
