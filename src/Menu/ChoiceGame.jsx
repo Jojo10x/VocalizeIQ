@@ -1,4 +1,4 @@
-import {  useState, useEffect } from 'react';
+import {  useState, useEffect,useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db , auth} from "../Firebase-config"; 
 import { doc, setDoc, getDoc ,onSnapshot} from "firebase/firestore";
@@ -14,27 +14,23 @@ function ChoiceGame() {
     const [wordCount, setWordCount] = useState(0);
     const [synthesisStatus, setSynthesisStatus] = useState('Idle');
     const [recognitionStatus, setRecognitionStatus] = useState('Idle');
-    const [randomWord, setRandomWord] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
     const navigate = useNavigate();
 
-    console.log("Data:", data);
     const currentSet = data[currentSetIndex];
-    console.log("Current Set:", currentSet); // Log the current set to see its structure and contents
 
-    const currentWord = currentSet.words[0]; // Get the first word from the current set
-    console.log("Current Word:", currentWord); // Log the current word
+    const currentWord = currentSet.words[0]; 
 
     const goBack = () => {
       navigate(-1);
     };
 
     const stopListening = (userInput) => {
-        const word = currentWord.trim().toLowerCase(); // Get the word from the current set
-        const isCorrect = userInput.trim().toLowerCase() === word; // Check if user input matches the word exactly
+        const word = currentWord.trim().toLowerCase(); 
+        const isCorrect = userInput.trim().toLowerCase() === word; 
 
         if (isCorrect) {
             setCorrectCount(prevCount => prevCount + 1);
@@ -44,10 +40,11 @@ function ChoiceGame() {
             setConfirmation('Incorrect. Try again.');
         }
         setWordCount(prevCount => prevCount + 1); 
+        setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); 
     };
 
     const handleReset = () => {
-        setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); // Move to the next set or wrap around to the first set
+        setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); 
         setConfirmation('');
         setCorrectCount(0);
         setIncorrectCount(0);
@@ -59,15 +56,6 @@ function ChoiceGame() {
     const recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
     recognition.continuous = true;
     recognition.interimResults = true;
-
-    useEffect(() => {
-        if (data && data.words && data.words.length > 0) {
-            const randomIndex = Math.floor(Math.random() * data.words.length);
-            setRandomWord(data.words[randomIndex]);
-        } else {
-            console.error("Data is not in the expected format");
-        }
-    }, []); 
 
     recognition.onstart = () => {
         setRecognitionStatus('Listening...');
@@ -94,17 +82,8 @@ function ChoiceGame() {
 
     let feedbackTimeout;
 
-    const startListening = () => {
-        recognition.lang = accent;
-        recognition.start();
-    };
-
     const NextWord = ()=>{
-        const randomIndex = Math.floor(Math.random() * data.words.length);
-        setRandomWord(data.words[randomIndex]);
-        setRecognizedText('');
-        setConfirmation('');
-        recognition.start();
+        setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); 
     }
 
     const [gameData, setGameData] = useState({});
@@ -183,30 +162,73 @@ function ChoiceGame() {
       }
     };
 
-    const playText = () => {
-      const textToRead = currentWord.trim();
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(textToRead);
-      utterance.lang = accent;
-      utterance.rate = parseFloat(document.getElementById("speechRate").value);
-      utterance.pitch = parseFloat(
-        document.getElementById("speechPitch").value
-      );
-
-      setSynthesisStatus("Playing...");
-      synth.cancel();
-      synth.speak(utterance);
-
-      utterance.onend = () => {
-        setSynthesisStatus("Idle");
+    const playText = useCallback(() => {
+        const textToRead = currentWord.trim();
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(textToRead);
+        utterance.lang = accent;
+        utterance.rate = parseFloat(document.getElementById('speechRate').value);
+        utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
+    
+        setSynthesisStatus('Playing...');
         synth.cancel();
-      };
+        synth.speak(utterance);
+    
+        utterance.onend = () => {
+          setSynthesisStatus('Idle');
+          synth.cancel();
+        };
+    
+        // utterance.onerror = (event) => {
+        //   setSynthesisStatus('Error');
+        //   setFeedback('Error occurred during speech synthesis: ' + event.error);
+        // };
+      }, [currentWord, accent]);
+    
+      useEffect(() => {
+        if (currentWord.trim() !== '') {
+          const timer = setTimeout(() => {
+            playText();
+          }, 1000); 
+      
+          return () => clearTimeout(timer); 
+        }
+      }, [currentWord, playText]);
 
-      utterance.onerror = (event) => {
-        setSynthesisStatus("Error");
-        setFeedback("Error occurred during speech synthesis: " + event.error);
-      };
-    };
+      useEffect(() => {
+        const fetchTotalCorrectGuesses = async () => {
+            if (auth.currentUser) {
+                const userId = auth.currentUser.uid;
+                const docRef = doc(db, "Guesses", userId);
+                
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+                        console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+                        setTotalCorrectGuesses(currentTotalCorrectGuesses);
+                    }
+                } catch (error) {
+                    console.error("Error fetching total correct guesses: ", error);
+                }
+            } else {
+                console.warn("User is not authenticated."); 
+            }
+        };
+
+        fetchTotalCorrectGuesses();
+
+     
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                fetchTotalCorrectGuesses(); 
+            }
+        });
+
+        return () => unsubscribe();
+    }, []); 
+      
 
     console.log()
     
@@ -219,7 +241,7 @@ function ChoiceGame() {
           <label>Random Word:</label>
           <div id="randomWord"> {currentWord}</div>
 
-          <label htmlFor="languageSelect">Select Language:</label>
+          <label htmlFor="languageSelect">Accent:</label>
           <select
             id="languageSelect"
             onChange={(e) => setAccent(e.target.value)}
@@ -228,8 +250,7 @@ function ChoiceGame() {
             <option value="en-GB">English (UK)</option>
             <option value="en-AU">English (Australia)</option>
           </select>
-
-          <button onClick={startListening}>Start Listening</button>
+          {/* <button onClick={startListening}>Start Listening</button> */}
           {/* <button onClick={stopListening}>Stop Listening</button> */}
           <button onClick={saveTotalCorrectGuesses}>Save</button>
           <button onClick={playText}>Play Text</button>
@@ -241,8 +262,18 @@ function ChoiceGame() {
                     <button key={index} onClick={() => stopListening(option)}>{option}</button>
                 ))}
             </div>
-            <p>{confirmation}</p>
-
+            <div
+            id="confirmation"
+            className={
+              correctCount > 0 || incorrectCount > 0
+                ? correctCount > 0
+                  ? "correct"
+                  : "incorrect"
+                : ""
+            }
+          >
+            <h1>{confirmation}</h1>
+          </div>
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
             type="range"
@@ -266,18 +297,6 @@ function ChoiceGame() {
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
           <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-          <div
-            id="confirmation"
-            className={
-              correctCount > 0 || incorrectCount > 0
-                ? correctCount > 0
-                  ? "correct"
-                  : "incorrect"
-                : ""
-            }
-          >
-            {confirmation}
-          </div>
           <div id="feedback" style={{ color: "#ffa500" }}>
             {feedback}
           </div>
@@ -289,14 +308,11 @@ function ChoiceGame() {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
+          <h2>
+              Total Correct Guesses:{totalCorrectGuesses}
+            </h2>
           <h1>History</h1>
           <div className="container">
-            <p>
-              Total Correct Guesses:{" "}
-              <span id="total-correct-guesses">
-                {gameData.totalCorrectGuesses || 0}
-              </span>
-            </p>
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>

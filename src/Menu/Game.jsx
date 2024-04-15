@@ -202,6 +202,39 @@ function Game() {
         setRandomWord(data.words[randomIndex]);
     };
     console.log()
+    useEffect(() => {
+      const fetchTotalCorrectGuesses = async () => {
+          if (auth.currentUser) {
+              const userId = auth.currentUser.uid;
+              const docRef = doc(db, "Guesses", userId);
+              
+              try {
+                  const docSnap = await getDoc(docRef);
+                  if (docSnap.exists()) {
+                      const data = docSnap.data();
+                      const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+                      console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+                      setTotalCorrectGuesses(currentTotalCorrectGuesses);
+                  }
+              } catch (error) {
+                  console.error("Error fetching total correct guesses: ", error);
+              }
+          } else {
+              console.warn("User is not authenticated."); 
+          }
+      };
+
+      fetchTotalCorrectGuesses();
+
+   
+      const unsubscribe = auth.onAuthStateChanged(user => {
+          if (user) {
+              fetchTotalCorrectGuesses(); 
+          }
+      });
+
+      return () => unsubscribe();
+  }, []); 
     
     return (
       <>
@@ -275,14 +308,9 @@ function Game() {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
+          <h2>Total Correct Guesses:{totalCorrectGuesses}</h2>
           <h1>History</h1>
           <div className="container">
-            <p>
-              Total Correct Guesses:{" "}
-              <span id="total-correct-guesses">
-                {gameData.totalCorrectGuesses || 0}
-              </span>
-            </p>
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
