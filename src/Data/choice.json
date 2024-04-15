@@ -10,6 +10,62 @@
     {
       "words": ["Cat"],
       "choice": ["Dog", "Cat", "Mouse", "Bird"]
+    },
+    {
+      "words": ["Tree"],
+      "choice": ["Tree", "Treat", "Trio", "Tide"]
+    },
+    {
+      "words": ["Ball"],
+      "choice": ["Ball", "Bell", "Bowl", "Bark"]
+    },
+    {
+      "words": ["Fish"],
+      "choice": ["Fish", "Fist", "Fizz", "Fifth"]
+    },
+    {
+      "words": ["Rain"],
+      "choice": ["Rain", "Reign", "Ray", "Rise"]
+    },
+    {
+      "words": ["Cake"],
+      "choice": ["Cake", "Cape", "Crate", "Cave"]
+    },
+    {
+      "words": ["Moon"],
+      "choice": ["Moon", "Mood", "Muse", "Morn"]
+    },
+    {
+      "words": ["Fire"],
+      "choice": ["Fire", "Fry", "Fur", "Flood"]
+    },
+    {
+      "words": ["Bear"],
+      "choice": ["Bear", "Bare", "Bier", "Beer"]
+    },
+    {
+      "words": ["Light"],
+      "choice": ["Light", "Lied", "Lime", "Lie"]
+    },
+    {
+      "words": ["Fork"],
+      "choice": ["Fork", "Folk", "Flock", "Fog"]
+    },
+    {
+      "words": ["Brick"],
+      "choice": ["Brick", "Break", "Brace", "Braze"]
+    },
+    {
+      "words": ["Mouse"],
+      "choice": ["Mouse", "Mouth", "Moss", "Muse"]
+    },
+    {
+      "words": ["Shell"],
+      "choice": ["Shell", "Shale", "Shoal", "Shawl"]
+    },
+    {
+      "words": ["Cane"],
+      "choice": ["Cane", "Cave", "Cave", "Cape"]
     }
   ]
   

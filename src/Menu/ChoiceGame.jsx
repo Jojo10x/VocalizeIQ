@@ -82,9 +82,16 @@ function ChoiceGame() {
 
     let feedbackTimeout;
 
-    const NextWord = ()=>{
-        setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); 
+    const NextWord = () => {
+        setCurrentSetIndex(prevIndex => {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * data.length);
+            } while (randomIndex === prevIndex); 
+            return randomIndex;
+        }); 
     }
+    
 
     const [gameData, setGameData] = useState({});
 
