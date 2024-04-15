@@ -298,3 +298,5 @@ function Game() {
 }
 
 export default Game;
+
+// Maybe this game should be daily tongue twister
