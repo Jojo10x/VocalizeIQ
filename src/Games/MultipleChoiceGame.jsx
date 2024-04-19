@@ -240,6 +240,7 @@ function MultipleChoiceGame() {
     
     return (
       <>
+       <h1>Word Quest</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
