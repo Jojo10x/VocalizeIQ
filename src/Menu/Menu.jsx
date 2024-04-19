@@ -5,6 +5,7 @@ import '../App.css'
 
 function Menu() {
     const navigate = useNavigate();
+    const user = auth.currentUser;
 
     const goBack = () => {
       navigate(-1);
@@ -31,7 +32,6 @@ function Menu() {
       const goSettings = () => {
         navigate('./settings');
       };
-      const user = auth.currentUser;
      
      
   return (
