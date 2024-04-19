@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut} from 'firebase/auth'
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut,updateProfile} from 'firebase/auth'
 import { auth} from '../Firebase-config'
 import styles from "./Login.module.css";
 
@@ -9,6 +9,7 @@ function Login() {
   const [logPassword, setLogPassword] = useState('');
   const [resEmail, setResEmail] = useState('');
   const [resPassword, setResPassword] = useState('');
+  const [newDisplayName, setNewDisplayName] = useState('');
 
   const [user,setUser]= useState(null);
 
@@ -41,6 +42,14 @@ function Login() {
 
     }
   };
+  const registerAndUpdateDisplayName = async () => {
+    try {
+      await register();
+      updateDisplayName();
+    } catch (error) {
+      console.error('Error registering user:', error);
+    }
+  };
 
   const login =  async () =>{
     try {
@@ -54,58 +63,106 @@ function Login() {
     
   };
 
+
   const logout =  async ()=>{
     
     await signOut(auth);
     
   };
 
+  const updateDisplayName = () => {
+    const user = auth.currentUser;
+    console.log(user)
+    if (user) {
+      updateProfile(user, {
+        displayName: newDisplayName 
+      }).then(() => {
+        setNewDisplayName('');
+      }).catch(error => {
+        console.error('Error updating display name:', error);
+      });
+    }
+  };
+
+  const handleChange = (event) => {
+    setNewDisplayName(event.target.value);
+  };
+
   return (
     <div className={styles["login-container"]}>
-      <h2 className={styles.title}>Register</h2>
-
-      <input
-        className={styles["input-field"]}
-        type="text"
-        placeholder="Username"
-        value={resEmail}
-        onChange={(e) => setResEmail(e.target.value)}
-      />
-      <input
-        className={styles["input-field"]}
-        type="password"
-        placeholder="Password"
-        value={resPassword}
-        onChange={(e) => setResPassword(e.target.value)}
-      />
-
-      <button className={styles["action-button"]} onClick={register}>
-        Register
-      </button>
-
-      <h2 className={styles.title}>Login</h2>
-      <input
-        className={styles["input-field"]}
-        type="text"
-        placeholder="Username"
-        value={logEmail}
-        onChange={(e) => setLogEmail(e.target.value)}
-      />
-      <input
-        className={styles["input-field"]}
-        type="password"
-        placeholder="Password"
-        value={logPassword}
-        onChange={(e) => setLogPassword(e.target.value)}
-      />
-      <button className={styles["action-button"]} onClick={login}>
-        Login
-      </button>
-      <h2 className={styles.title}>User Logged In: {user?.email}</h2>
-
-      <button className={styles["logout-button"]} onClick={logout}>
-        LogOut
-      </button>
+      <h2 className={styles["main-title"]}>
+        Hello{" "}
+        <span
+          className={styles["waving-hand"]}
+          role="img"
+          aria-label="waving hand"
+        >
+          👋
+        </span>
+      </h2>
+      <div className={styles.formContainer}>
+        <div className={styles.form}>
+          <h2 className={styles.title}>Register</h2>
+          <input
+            className={styles["input-field"]}
+            type="text"
+            value={newDisplayName}
+            placeholder="Name"
+            onChange={handleChange}
+          />
+          <input
+            className={styles["input-field"]}
+            type="text"
+            placeholder="Email"
+            value={resEmail}
+            onChange={(e) => setResEmail(e.target.value)}
+          />
+          <input
+            className={styles["input-field"]}
+            type="password"
+            placeholder="Password"
+            value={resPassword}
+            onChange={(e) => setResPassword(e.target.value)}
+          />
+          <button
+            className={styles["action-button"]}
+            onClick={registerAndUpdateDisplayName}
+          >
+            Register
+          </button>
+        </div>
+        <div className={styles.form}>
+          <h2 className={styles.title}>Login</h2>
+          <input
+            className={styles["input-field"]}
+            type="text"
+            placeholder="Email"
+            value={logEmail}
+            onChange={(e) => setLogEmail(e.target.value)}
+          />
+          <input
+            className={styles["input-field"]}
+            type="password"
+            placeholder="Password"
+            value={logPassword}
+            onChange={(e) => setLogPassword(e.target.value)}
+          />
+          <button className={styles["action-button"]} onClick={login}>
+            Login
+          </button>
+        </div>
+      </div>
+      {user && (
+        <div className={styles.loggedInMessage}>
+          <h2 className={`${styles.title} ${styles.animatedEmoji}`}>
+            Welcome {user.displayName} 🎉
+          </h2>
+          <h3 className={styles["secondary-title"]}> {user.email}</h3>
+          <button className={styles["logout-button"]} onClick={logout}>
+            Logout 
+          </button>
+        </div>
+      )}
     </div>
   );
 }

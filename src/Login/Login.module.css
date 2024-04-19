@@ -1,45 +1,105 @@
 .login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.formContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.form {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.input-field {
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.action-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.loggedInMessage {
+  text-align: center;
+}
+
+.logout-button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545;
+  color: #fff;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.waving-hand {
+  display: inline-block;
+  animation: wave 2s infinite;
+}
+.main-title{
+  font-size: 40px;
+  font-family: "Jersey 10", sans-serif;
+}
+.secondary-title{
+  font-size: 20px;
+  font-family: "Jersey 10", sans-serif;
+  margin-top: 0;
+}
+
+.animatedEmoji {
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
   }
-  
-  .role-selection {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  to {
+    transform: translateY(-5px);
   }
-  
-  .input-field {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .title {
-    margin-bottom: 10px;
-  }
-  
-  .action-button,
-  .logout-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .action-button:hover,
-  .logout-button:hover {
-    background-color: #0056b3;
-  }
-  
+}

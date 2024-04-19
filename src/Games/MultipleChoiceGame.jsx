@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { db , auth} from "../Firebase-config"; 
 import { doc, setDoc, getDoc ,onSnapshot} from "firebase/firestore";
 import data from '../Data/choice.json';
-import '../App.css'
 
 
-function ChoiceGame() {
+function MultipleChoiceGame() {
     const [recognizedText, setRecognizedText] = useState('');
     const [feedback, setFeedback] = useState('');
     const [confirmation, setConfirmation] = useState('');
@@ -257,8 +256,6 @@ function ChoiceGame() {
             <option value="en-GB">English (UK)</option>
             <option value="en-AU">English (Australia)</option>
           </select>
-          {/* <button onClick={startListening}>Start Listening</button> */}
-          {/* <button onClick={stopListening}>Stop Listening</button> */}
           <button onClick={saveTotalCorrectGuesses}>Save</button>
           <button onClick={playText}>Play Text</button>
           <button onClick={handleReset}>Reset</button>
@@ -334,4 +331,4 @@ function ChoiceGame() {
     );
 }
 
-export default ChoiceGame;
+export default MultipleChoiceGame;

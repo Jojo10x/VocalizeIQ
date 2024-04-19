@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { auth} from '../Firebase-config'
 // import styles from "./Menu.module.css";
 import '../App.css'
 
@@ -25,14 +26,23 @@ function Menu() {
       const goChoice = () => {
         navigate('./choice');
       };
+      const goInstructions = () => {
+        navigate('./instructions');
+      };
+      const user = auth.currentUser;
      
      
   return (
     <div className="admin-dashboard-container">
-      <button className="back-button" onClick={goBack}>Back</button>
-      <button className="forward-button" onClick={goForward}>Forward</button>
+      <h2 className="">Hello {user.displayName}</h2>
+      <button className="back-button" onClick={goBack}>
+        Back
+      </button>
+      <button className="forward-button" onClick={goForward}>
+        Forward
+      </button>
       <h1>Hello I am the Menu</h1>
-      <button>Instructions</button>
+      <button onClick={goInstructions}>Instructions</button>
       <button onClick={goTest}>Test</button>
       <button onClick={goPro}>Prouncition</button>
       <button onClick={goGame}>Game</button>
