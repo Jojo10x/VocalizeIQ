@@ -36,7 +36,7 @@ function Menu() {
      
   return (
     <div className="admin-dashboard-container">
-      <h2 className="">Hello {user.displayName}</h2>
+       {user && <h2 className="">Hello {user.displayName}</h2>}
       <button className="back-button" onClick={goBack}>
         Back
       </button>
