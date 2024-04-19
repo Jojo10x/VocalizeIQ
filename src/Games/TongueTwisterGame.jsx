@@ -238,6 +238,7 @@ function Game() {
     
     return (
       <>
+      <h1>Word Wobble</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back

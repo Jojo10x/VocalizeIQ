@@ -43,6 +43,7 @@ function Setttings() {
   
     return (
       <>
+      <h1>Settings</h1>
         <button className="back-button" onClick={goBack}>
           Back
         </button>

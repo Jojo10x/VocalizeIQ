@@ -49,9 +49,9 @@ select, button {
   color: white;
 }
 
-button:hover {
+/* button:hover {
   background-color: #45a049;
-}
+} */
 
 #recognizedText {
   margin-top: 20px;

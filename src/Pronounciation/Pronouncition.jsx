@@ -199,9 +199,9 @@ function Prouncition() {
     
     return (
       <>
+      <h1>Pronunciation</h1>
         <div className="container">
         <div id="totalCorrectGuesses">Total Guesses: <h1>{totalCorrectGuesses}</h1></div> 
-        <button className="back-button" onClick={goBack}>Back</button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
@@ -256,6 +256,7 @@ function Prouncition() {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
+          <button className="back-button" onClick={goBack}>Back</button>
         </div>
       </>
     );
