@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { auth} from '../Firebase-config'
-// import styles from "./Menu.module.css";
 import '../App.css'
 
 
@@ -29,6 +28,9 @@ function Menu() {
       const goInstructions = () => {
         navigate('./instructions');
       };
+      const goSettings = () => {
+        navigate('./settings');
+      };
       const user = auth.currentUser;
      
      
@@ -47,6 +49,7 @@ function Menu() {
       <button onClick={goPro}>Prouncition</button>
       <button onClick={goGame}>Game</button>
       <button onClick={goChoice}>Choice</button>
+      <button onClick={goSettings}>Settings</button>
     </div>
   );
 }

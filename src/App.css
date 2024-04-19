@@ -119,3 +119,22 @@ h1 {
   background: linear-gradient(to right, #FF416C, #FF4B2B);
   background-clip: text;
 }
+
+
+.breadcrumbs {
+  margin-bottom: 20px;
+}
+
+.breadcrumbs a {
+  color: #007bff; 
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.breadcrumbs a:hover {
+  color: #0056b3; 
+}
+
+.breadcrumb-separator {
+  color: #666; 
+}
