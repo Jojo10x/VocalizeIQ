@@ -261,10 +261,10 @@ function MultipleChoiceGame() {
           <button onClick={playText}>Play Text</button>
           <button onClick={handleReset}>Reset</button>
           <button onClick={NextWord}>Next</button>
-          <p>Please choose one of the options for {currentWord}:</p>
+          <p>Please choose one of the options {currentWord}:</p>
             <div>
                 {currentSet.choice.map((option, index) => (
-                    <button key={index} onClick={() => stopListening(option)}>{option}</button>
+                    <button key={index} className="option-button" onClick={() => stopListening(option)}>{option}</button>
                 ))}
             </div>
             <div
