@@ -17,6 +17,7 @@ function MultipleChoiceGame() {
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
+    const [showWord, setShowWord] = useState(false);
     const navigate = useNavigate();
 
     const currentSet = data[currentSetIndex];
@@ -27,7 +28,7 @@ function MultipleChoiceGame() {
       navigate(-1);
     };
 
-    const stopListening = (userInput) => {
+    const selectWord = (userInput) => {
         const word = currentWord.trim().toLowerCase(); 
         const isCorrect = userInput.trim().toLowerCase() === word; 
 
@@ -234,19 +235,33 @@ function MultipleChoiceGame() {
 
         return () => unsubscribe();
     }, []); 
+
+    const toggleWordVisibility = () => {
+      setShowWord(!showWord);
+    };
       
 
     console.log()
     
     return (
       <>
-       <h1>Word Quest</h1>
+        <h1>Word Quest</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
           </button>
-          <label>Random Word:</label>
-          <div id="randomWord"> {currentWord}</div>
+          {/* <label>Random Word:</label> */}
+          <div>
+            <button onClick={toggleWordVisibility} className="toggleButton">
+              {showWord ? "Hide" : "Show"}
+            </button>
+            <div
+              id="randomWord"
+              style={{ display: showWord ? "block" : "none" }}
+            >
+              {currentWord}
+            </div>
+          </div>
 
           <label htmlFor="languageSelect">Accent:</label>
           <select
@@ -257,17 +272,34 @@ function MultipleChoiceGame() {
             <option value="en-GB">English (UK)</option>
             <option value="en-AU">English (Australia)</option>
           </select>
-          <button onClick={saveTotalCorrectGuesses}>Save</button>
-          <button onClick={playText}>Play Text</button>
-          <button onClick={handleReset}>Reset</button>
-          <button onClick={NextWord}>Next</button>
-          <p>Please choose one of the options for {currentWord}:</p>
-            <div>
-                {currentSet.choice.map((option, index) => (
-                    <button key={index} onClick={() => stopListening(option)}>{option}</button>
-                ))}
-            </div>
-            <div
+          <button
+            onClick={saveTotalCorrectGuesses}
+            className="actionButton saveButton"
+          >
+            Save
+          </button>
+          <button onClick={playText} className="actionButton playButton">
+            Play Text
+          </button>
+          <button onClick={handleReset} className="actionButton resetButton">
+            Reset
+          </button>
+          <button onClick={NextWord} className="actionButton nextButton">
+            Next
+          </button>
+          <p>Please choose one of the options:</p>
+          <div className="buttonContainer">
+            {currentSet.choice.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => selectWord(option)}
+                className="wordButton"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <div
             id="confirmation"
             className={
               correctCount > 0 || incorrectCount > 0
@@ -313,16 +345,21 @@ function MultipleChoiceGame() {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
-          <h2>
-              Total Correct Guesses:{totalCorrectGuesses}
-            </h2>
+          <h2>Total Correct Guesses:{totalCorrectGuesses}</h2>
           <h1>History</h1>
           <div className="container">
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
-                    <p>Date: <span className="colorful-text">{date}</span></p>
-                    <p>Total Correct Guesses: <span className="colorful-text">{data.totalCorrectGuesses}</span></p>
+                  <p>
+                    Date: <span className="colorful-text">{date}</span>
+                  </p>
+                  <p>
+                    Total Correct Guesses:{" "}
+                    <span className="colorful-text">
+                      {data.totalCorrectGuesses}
+                    </span>
+                  </p>
                 </div>
               ))}
             </div>

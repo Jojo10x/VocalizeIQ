@@ -238,7 +238,7 @@ function Game() {
     
     return (
       <>
-      <h1>Word Wobble</h1>
+        <h1>Word Wobble</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
@@ -256,12 +256,27 @@ function Game() {
             <option value="en-AU">English (Australia)</option>
           </select>
 
-          <button onClick={startListening}>Start Listening</button>
-          <button onClick={stopListening}>Stop Listening</button>
-          <button onClick={saveTotalCorrectGuesses}>Save</button>
-          <button onClick={playText}>Play Text</button>
-          <button onClick={resetGame}>Reset</button>
-          <button onClick={NextWord}>Next</button>
+          <button onClick={startListening} className="actionButton startButton">
+            Start Listening
+          </button>
+          <button onClick={stopListening} className="actionButton stopButton">
+            Stop Listening
+          </button>
+          <button
+            onClick={saveTotalCorrectGuesses}
+            className="actionButton saveButton"
+          >
+            Save
+          </button>
+          <button onClick={playText} className="actionButton playButton">
+            Play Text
+          </button>
+          <button onClick={resetGame} className="actionButton resetButton">
+            Reset
+          </button>
+          <button onClick={NextWord} className="actionButton nextButton">
+            Next
+          </button>
 
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
@@ -315,8 +330,15 @@ function Game() {
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
-                    <p>Date: <span className="colorful-text">{date}</span></p>
-                    <p>Total Correct Guesses: <span className="colorful-text">{data.totalCorrectGuesses}</span></p>
+                  <p>
+                    Date: <span className="colorful-text">{date}</span>
+                  </p>
+                  <p>
+                    Total Correct Guesses:{" "}
+                    <span className="colorful-text">
+                      {data.totalCorrectGuesses}
+                    </span>
+                  </p>
                 </div>
               ))}
             </div>
