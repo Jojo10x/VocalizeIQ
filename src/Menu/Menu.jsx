@@ -8,6 +8,7 @@ import RouteSVG from '../assets/route.svg'
 import GameSVG from '../assets/game.svg'
 import VoiceSVG from '../assets/voice.svg'
 import InstructionsSVG from '../assets/instructions.svg'
+import LogoutButton from "../Login/LogoutButton";
 
 function Menu() {
   const navigate = useNavigate();
@@ -84,6 +85,7 @@ function Menu() {
         >
           Forward
         </button>
+        <LogoutButton/>
       </div>
     </>
   );
