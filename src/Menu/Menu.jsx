@@ -14,12 +14,12 @@ function Menu() {
   const navigate = useNavigate();
   // const user = auth.currentUser;
 
-  const goBack = () => {
-    navigate(-1);
-  };
-  const goForward = () => {
-    navigate("./home");
-  };
+  // const goBack = () => {
+  //   navigate(-1);
+  // };
+  // const goForward = () => {
+  //   navigate("./home");
+  // };
 
   const goTest = () => {
     navigate("./test");
@@ -73,7 +73,7 @@ function Menu() {
         </div>
       </div>
       <div>
-        <button
+        {/* <button
           className={`${styles["menu-button"]} ${styles["back-button"]}`}
           onClick={goBack}
         >
@@ -84,7 +84,7 @@ function Menu() {
           onClick={goForward}
         >
           Forward
-        </button>
+        </button> */}
         <LogoutButton/>
       </div>
     </>

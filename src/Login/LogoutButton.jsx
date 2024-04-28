@@ -5,21 +5,37 @@ import { auth} from '../Firebase-config'
 import styles from "./Login.module.css";
 
 const LogoutButton = ({ onClick }) => {
-    const navigate = useNavigate();  
+
+  const user = auth.currentUser;
+
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.log(error.message);
     }
   };
 
   return (
-    <button className={styles["logout-button"]} onClick={onClick || handleLogout}>
-      Logout
-    </button>
+    <>
+      {user && (
+        <div className={styles.loggedInMessage}>
+          <h2 className={`${styles.title} ${styles.animatedEmoji}`}>
+            Welcome {user.displayName} 🎉
+          </h2>
+          <h3 className={styles["secondary-title"]}> {user.email}</h3>
+          <button
+            className={styles["logout-button"]}
+            onClick={onClick || handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 
