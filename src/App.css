@@ -145,32 +145,97 @@ h1 {
   color: #666; 
 }
 
-.option-button {
 
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+/* test and game btns */
+
+.actionButton {
   padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin: 5px;
+  transition: all 0.3s ease;
 }
 
-.option-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.15); 
+.startButton {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.stopButton {
+  background-color: #f44336; 
+  color: white;
+}
+
+.playButton {
+  background-color: #2196F3;
+  color: white;
+}
+
+.resetButton {
+  background-color: #ff9800; 
+  color: white;
+}
+
+.saveButton {
+  background-color: #9c27b0; 
+  color: white;
+}
+
+.nextButton {
+  background-color: #607d8b;
+  color: white;
+}
+
+.actionButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 
-@keyframes popUp {
-  0% {
-    transform: scale(0); 
-    opacity: 0; 
-  }
-  80% {
-    transform: scale(1.1); 
-    opacity: 1; 
-  }
-  100% {
-    transform: scale(1); 
-  }
+/* Game special btn */
+
+.buttonContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wordButton {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2196F3; /* Blue */
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wordButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #4CAF50;
+}
+
+
+.toggleButton {
+  padding: 8px 15px; 
+  margin-bottom: 10px;
+  border: 2px solid #2196F3;
+  border-radius: 20px; 
+  background-color: transparent;
+  color: #2196F3; 
+  font-size: 14px; 
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggleButton:hover {
+  background-color: #4CAF50;
+  color: white; 
+  border: none;
+
 }

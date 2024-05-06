@@ -200,8 +200,12 @@ const TestLevel = () => {
     return (
       <>
         <div className="container">
-        <div id="totalCorrectGuesses">Total Guesses: <h1>{totalCorrectGuesses}</h1></div> 
-        <button className="back-button" onClick={goBack}>Back</button>
+          <div id="totalCorrectGuesses">
+            Total Guesses: <h1>{totalCorrectGuesses}</h1>
+          </div>
+          <button className="back-button" onClick={goBack}>
+            Back
+          </button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
@@ -214,12 +218,27 @@ const TestLevel = () => {
             <option value="ru">Russian</option>
           </select>
 
-          <button onClick={startListening}>Start Listening</button>
-          <button onClick={stopListening}>Stop Listening</button>
-          <button onClick={playText}>Play Text</button>
-          <button onClick={resetGame}>Reset</button>
-          <button onClick={saveTotalCorrectGuesses}>Save</button>
-          <button onClick={NextWord}>Next</button>
+          <button onClick={startListening} className="actionButton startButton">
+            Start Listening
+          </button>
+          <button onClick={stopListening} className="actionButton stopButton">
+            Stop Listening
+          </button>
+          <button onClick={playText} className="actionButton playButton">
+            Play Text
+          </button>
+          <button onClick={resetGame} className="actionButton resetButton">
+            Reset
+          </button>
+          <button
+            onClick={saveTotalCorrectGuesses}
+            className="actionButton saveButton"
+          >
+            Save
+          </button>
+          <button onClick={NextWord} className="actionButton nextButton">
+            Next
+          </button>
 
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
@@ -243,15 +262,26 @@ const TestLevel = () => {
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
-            <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-            <div id="confirmation" className={correctCount > 0 || incorrectCount > 0 ? (correctCount > 0 ? 'correct' : 'incorrect') : ''}>
-                {confirmation}
-            </div>
+          <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
+          <div
+            id="confirmation"
+            className={
+              correctCount > 0 || incorrectCount > 0
+                ? correctCount > 0
+                  ? "correct"
+                  : "incorrect"
+                : ""
+            }
+          >
+            {confirmation}
+          </div>
           <div id="feedback" style={{ color: "#ffa500" }}>
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
-          <div id="totalCorrectGuesses">Total Correct Guesses: {totalCorrectGuesses}</div> 
+          <div id="totalCorrectGuesses">
+            Total Correct Guesses: {totalCorrectGuesses}
+          </div>
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
