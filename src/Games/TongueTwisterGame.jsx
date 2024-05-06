@@ -238,7 +238,7 @@ function Game() {
     
     return (
       <>
-      <h1>Word Wobble</h1>
+        <h1>Word Wobble</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
@@ -331,6 +331,7 @@ function Game() {
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
                      <p>
+
                     Date: <span className="colorful-text">{date}</span>
                   </p>
                   <p>

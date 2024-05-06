@@ -200,8 +200,12 @@ const TestLevel = () => {
     return (
       <>
         <div className="container">
-        <div id="totalCorrectGuesses">Total Guesses: <h1>{totalCorrectGuesses}</h1></div> 
-        <button className="back-button" onClick={goBack}>Back</button>
+          <div id="totalCorrectGuesses">
+            Total Guesses: <h1>{totalCorrectGuesses}</h1>
+          </div>
+          <button className="back-button" onClick={goBack}>
+            Back
+          </button>
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
@@ -260,6 +264,7 @@ const TestLevel = () => {
           <div id="correctCount">Correct Guesses: {correctCount}</div>
             <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
             <div
+
             id="confirmation"
             className={
               correctCount > 0 || incorrectCount > 0

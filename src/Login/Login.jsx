@@ -20,6 +20,12 @@ function Login() {
     return unsubscribe;
   },[])
 
+  useEffect(() => {
+    if (user) {
+      navigate('/menu');
+    }
+  }, [user, navigate]);
+
   async function initializeUser(user){
     if(user){
       setUser({...user});
@@ -64,23 +70,21 @@ function Login() {
   };
 
 
-  const logout =  async ()=>{
-    
-    await signOut(auth);
-    
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null); 
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
-  const updateDisplayName = () => {
-    const user = auth.currentUser;
-    console.log(user)
-    if (user) {
-      updateProfile(user, {
-        displayName: newDisplayName 
-      }).then(() => {
-        setNewDisplayName('');
-      }).catch(error => {
-        console.error('Error updating display name:', error);
-      });
+  const updateDisplayName = async (user) => {
+    try {
+      await updateProfile(user, { displayName: newDisplayName });
+      setNewDisplayName(''); 
+    } catch (error) {
+      console.error('Error updating display name:', error);
     }
   };
 

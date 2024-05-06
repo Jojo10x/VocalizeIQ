@@ -17,6 +17,7 @@ function MultipleChoiceGame() {
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
+    const [showWord, setShowWord] = useState(false);
     const navigate = useNavigate();
     const [showWord, setShowWord] = useState(false);
 
@@ -238,18 +239,23 @@ function MultipleChoiceGame() {
 
         return () => unsubscribe();
     }, []); 
+
+    const toggleWordVisibility = () => {
+      setShowWord(!showWord);
+    };
       
 
     console.log()
     
     return (
       <>
-       <h1>Word Quest</h1>
+        <h1>Word Quest</h1>
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
-          </button>
-          <label>Random Word:</label>
+
+          {/* <label>Random Word:</label> */}
+
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
               {showWord ? "Hide" : "Show"}
@@ -344,16 +350,21 @@ function MultipleChoiceGame() {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
-          <h2>
-              Total Correct Guesses:{totalCorrectGuesses}
-            </h2>
+          <h2>Total Correct Guesses:{totalCorrectGuesses}</h2>
           <h1>History</h1>
           <div className="container">
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
-                    <p>Date: <span className="colorful-text">{date}</span></p>
-                    <p>Total Correct Guesses: <span className="colorful-text">{data.totalCorrectGuesses}</span></p>
+                  <p>
+                    Date: <span className="colorful-text">{date}</span>
+                  </p>
+                  <p>
+                    Total Correct Guesses:{" "}
+                    <span className="colorful-text">
+                      {data.totalCorrectGuesses}
+                    </span>
+                  </p>
                 </div>
               ))}
             </div>
