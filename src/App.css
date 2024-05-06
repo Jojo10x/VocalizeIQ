@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 
+.correct {
+  color: green;
+}
 
+.incorrect {
+  color: red;
+}
 
 .admin-dashboard-container {
   padding: 20px;
@@ -231,4 +237,5 @@ h1 {
   background-color: #4CAF50;
   color: white; 
   border: none;
+
 }
