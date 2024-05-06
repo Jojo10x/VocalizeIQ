@@ -15,6 +15,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  img{
+    width: 90%;
+  }
 }
 
 .scrollToTop.visible {
@@ -26,8 +29,4 @@
   width: 30px;
   height: 30px;
   fill: #fff;
-}
-
-img{
-  width: 90%;
 }

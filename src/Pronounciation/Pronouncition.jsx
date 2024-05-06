@@ -214,12 +214,27 @@ function Prouncition() {
             <option value="ru">Russian</option>
           </select>
 
-          <button onClick={startListening}>Start Listening</button>
-          <button onClick={stopListening}>Stop Listening</button>
-          <button onClick={playText}>Play Text</button>
-          <button onClick={resetGame}>Reset</button>
-          <button onClick={saveTotalCorrectGuesses}>Save</button>
-          <button onClick={NextWord}>Next</button>
+          <button onClick={startListening} className="actionButton startButton">
+            Start Listening
+          </button>
+          <button onClick={stopListening} className="actionButton stopButton">
+            Stop Listening
+          </button>
+          <button onClick={playText} className="actionButton playButton">
+            Play Text
+          </button>
+          <button onClick={resetGame} className="actionButton resetButton">
+            Reset
+          </button>
+          <button
+            onClick={saveTotalCorrectGuesses}
+            className="actionButton saveButton"
+          >
+            Save
+          </button>
+          <button onClick={NextWord} className="actionButton nextButton">
+            Next
+          </button>
 
           <label htmlFor="speechRate">Speech Rate:</label>
           <input
