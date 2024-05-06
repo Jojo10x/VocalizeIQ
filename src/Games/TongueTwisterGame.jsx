@@ -330,7 +330,8 @@ function Game() {
             <div id="history">
               {Object.entries(gameData).map(([date, data]) => (
                 <div className="history-item" key={date}>
-                  <p>
+                     <p>
+
                     Date: <span className="colorful-text">{date}</span>
                   </p>
                   <p>

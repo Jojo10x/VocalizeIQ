@@ -19,6 +19,7 @@ function MultipleChoiceGame() {
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
     const [showWord, setShowWord] = useState(false);
     const navigate = useNavigate();
+    const [showWord, setShowWord] = useState(false);
 
     const currentSet = data[currentSetIndex];
 
@@ -41,6 +42,9 @@ function MultipleChoiceGame() {
         }
         setWordCount(prevCount => prevCount + 1); 
         setCurrentSetIndex(prevIndex => (prevIndex + 1) % data.length); 
+    };
+    const toggleWordVisibility = () => {
+      setShowWord(!showWord);
     };
 
     const handleReset = () => {
@@ -249,8 +253,9 @@ function MultipleChoiceGame() {
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
-          </button>
+
           {/* <label>Random Word:</label> */}
+
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
               {showWord ? "Hide" : "Show"}

@@ -262,8 +262,9 @@ const TestLevel = () => {
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
-          <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-          <div
+            <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
+            <div
+
             id="confirmation"
             className={
               correctCount > 0 || incorrectCount > 0
