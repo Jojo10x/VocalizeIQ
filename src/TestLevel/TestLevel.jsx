@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import data from '../Data/data.json';
 import { db , auth} from "../Firebase-config"; 
 import { doc, updateDoc,setDoc, getDoc } from "firebase/firestore";
+import TotalCorrectGuesses from '../components/TotalCorrectGuesses';
+import ShowLevel from '../components/ShowLevel';
 
 const TestLevel = () => {
     const [recognizedText, setRecognizedText] = useState('');
@@ -89,81 +91,71 @@ const TestLevel = () => {
         
         
     };
-    useEffect(() => {
-        const fetchTotalCorrectGuesses = async () => {
-            if (auth.currentUser) {
-                const userId = auth.currentUser.uid;
-                const docRef = doc(db, "Guesses", userId);
-                
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const currentTotalCorrectGuesses = data.totalCorrectGuesses;
-                        console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                        setTotalCorrectGuesses(currentTotalCorrectGuesses);
-                    }
-                } catch (error) {
-                    console.error("Error fetching total correct guesses: ", error);
-                }
-            } else {
-                console.warn("User is not authenticated."); 
-            }
-        };
-
-        fetchTotalCorrectGuesses();
-
-     
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                fetchTotalCorrectGuesses(); 
-            }
-        });
-
-        return () => unsubscribe();
-    }, []); 
-
-
+   
     const saveTotalCorrectGuesses = async () => {
-        console.log("Save button clicked");
-        console.log("Current user:", auth.currentUser)
-        if (auth.currentUser) {
-            const userId = auth.currentUser.uid;
-            const newTotalCorrectGuesses = totalCorrectGuesses + correctCount;
-            console.log("New total correct guesses:", newTotalCorrectGuesses);
-            
-            try {
-                const docRef = doc(db, "Guesses", userId);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const currentTotalCorrectGuesses = data.totalCorrectGuesses;
-                    console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                    if (currentTotalCorrectGuesses <= newTotalCorrectGuesses) {
-                        await updateDoc(docRef, {
-                            totalCorrectGuesses: newTotalCorrectGuesses
-                        });
-                        console.log("Total correct guesses updated successfully");
-                        setTotalCorrectGuesses(newTotalCorrectGuesses); 
-                    } else {
-                        console.log("Total correct guesses in Firebase is already up to date");
-                    }
-                } else {
-                    await setDoc(docRef, {
-                        totalCorrectGuesses: newTotalCorrectGuesses
-                    });
-                    console.log("Document added with ID: ", docRef.id);
-                    console.log("Total correct guesses added successfully");
-                    setTotalCorrectGuesses(newTotalCorrectGuesses); 
-                }
-            } catch (error) {
-                console.error("Error saving total correct guesses: ", error);
-            }
-    
-            // Optionally reset correctCount after saving
-            setCorrectCount(0);
-        }
-    };
+      console.log("Save button clicked");
+      console.log("Current user:", auth.currentUser)
+      if (auth.currentUser) {
+          const userId = auth.currentUser.uid;
+          const newTotalCorrectGuesses = totalCorrectGuesses + correctCount;
+          console.log("New total correct guesses:", newTotalCorrectGuesses);
+          
+          let level;
+          if (newTotalCorrectGuesses >= 0 && newTotalCorrectGuesses <= 5) {
+              level = "beginner";
+          } else if (newTotalCorrectGuesses >= 6 && newTotalCorrectGuesses <= 9) {
+              level = "pre-intermediate";
+          } else if (newTotalCorrectGuesses >= 10 && newTotalCorrectGuesses <= 14) {
+              level = "intermediate";
+          } else if (newTotalCorrectGuesses >= 15 && newTotalCorrectGuesses <= 18) {
+              level = "upper intermediate";
+          } else if (newTotalCorrectGuesses >= 19 && newTotalCorrectGuesses <= 22) {
+              level = "advanced";
+          } else if (newTotalCorrectGuesses >= 23) {
+              level = "proficient";
+          } else {
+              level = "unknown";
+          }
+  
+          console.log("Level:", level);
+          
+          try {
+              const docRef = doc(db, "Guesses", userId);
+              const docSnap = await getDoc(docRef);
+              if (docSnap.exists()) {
+                  const data = docSnap.data();
+                  const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+                  console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+                  if (currentTotalCorrectGuesses <= newTotalCorrectGuesses) {
+                      await updateDoc(docRef, {
+                          totalCorrectGuesses: newTotalCorrectGuesses,
+                          level: level 
+                      });
+                      console.log("Total correct guesses updated successfully");
+                      setTotalCorrectGuesses(newTotalCorrectGuesses);
+
+                  } else {
+                      console.log("Total correct guesses in Firebase is already up to date");
+                  }
+              } else {
+                  await setDoc(docRef, {
+                      totalCorrectGuesses: newTotalCorrectGuesses,
+                      level: level 
+                  });
+                  console.log("Document added with ID: ", docRef.id);
+                  console.log("Total correct guesses added successfully");
+                  setTotalCorrectGuesses(newTotalCorrectGuesses);
+              }
+          } catch (error) {
+              console.error("Error saving total correct guesses: ", error);
+          }
+  
+          // Optionally reset correctCount after saving
+          setCorrectCount(0);
+      }
+  };
+  
+
     const playText = () => {
         const textToRead = randomWord.trim(); 
         const synth = window.speechSynthesis;
@@ -195,18 +187,14 @@ const TestLevel = () => {
         const randomIndex = Math.floor(Math.random() * data.words.length);
         setRandomWord(data.words[randomIndex]);
     };
-    console.log()
     
     return (
       <>
         <div className="container">
           <div id="totalCorrectGuesses">
-            Total Guesses: <h1>{totalCorrectGuesses}</h1>
+            <h1><TotalCorrectGuesses/></h1>
+            <h1><ShowLevel/></h1>
           </div>
-          <button className="back-button" onClick={goBack}>
-            Back
-          </button>
-          <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
           <label htmlFor="languageSelect">Select Language:</label>
@@ -287,6 +275,9 @@ const TestLevel = () => {
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
+          <button className="back-button" onClick={goBack}>
+            Back
+          </button>
         </div>
       </>
     );
