@@ -1,0 +1,9 @@
+{
+    "beginner": ["sun", "happy", "bird", "run", "blue", "eat", "tree", "jump", "dog", "flower"],
+    "pre-intermediate": ["adventure", "mystery", "explore", "discovery", "curiosity", "wanderlust", "journey", "imagination", "wonder", "fascination"],
+    "intermediate": ["harmony", "courageous", "resilient", "vibrant", "innovative", "fascinating", "conquer", "endurance", "renaissance", "enthusiasm"],
+    "upper intermediate": ["serendipity", "perplexing", "ephemeral", "intricate", "sophisticated", "paradoxical", "ambiguous", "elaborate", "formidable", "conundrum"],
+    "advanced": ["quintessential", "prolific", "indomitable", "precocious", "exquisite", "magnanimous", "efficacious", "salient", "ubiquitous", "pulchritudinous"],
+    "proficient": ["sesquipedalian", "apocryphal", "sagacious", "effervescent", "quixotic", "perspicacious", "indefatigable", "ebullient", "pulchritudinous", "serendipity"]
+  }
+  
