@@ -212,7 +212,7 @@ function Game() {
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
-          <label htmlFor="languageSelect">Select Language:</label>
+          <label htmlFor="languageSelect">Accent:</label>
           <select
             id="languageSelect"
             onChange={(e) => setAccent(e.target.value)}
@@ -244,25 +244,26 @@ function Game() {
             Next
           </button>
 
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>

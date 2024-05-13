@@ -173,7 +173,7 @@ function Prouncition() {
             onChange={(e) => setLanguage(e.target.value)}
           >
             <option value="en-US">English (US)</option>
-            <option value="ru">Russian</option>
+            {/* <option value="ru">Russian</option> */}
           </select>
 
           <button onClick={startListening} className="actionButton startButton">
@@ -198,25 +198,26 @@ function Prouncition() {
             Next
           </button>
 
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
