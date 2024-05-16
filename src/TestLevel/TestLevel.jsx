@@ -76,6 +76,29 @@ const TestLevel = () => {
         recognition.start();
     }
 
+    const playText = () => {
+      const textToRead = randomWord.trim(); 
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = language;
+      utterance.rate = parseFloat(document.getElementById('speechRate').value);
+      utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
+
+      setSynthesisStatus('Playing...');
+      synth.cancel(); 
+      synth.speak(utterance);
+
+      utterance.onend = () => {
+          setSynthesisStatus('Idle');
+          synth.cancel();
+      };
+
+      utterance.onerror = (event) => {
+          setSynthesisStatus('Error');
+          setFeedback('Error occurred during speech synthesis: ' + event.error);
+      };
+  };
+
     const stopListening = () => {
         recognition.stop();
         const userInput = recognizedText.trim().toLowerCase();
@@ -83,15 +106,16 @@ const TestLevel = () => {
         if (isCorrect) {
             setCorrectCount(prevCount => prevCount + 1);
             setConfirmation('Correct!');
+            
         } else {
             setIncorrectCount(prevCount => prevCount + 1);
             setConfirmation('Incorrect. Try again.');
         }
-        setWordCount(prevCount => prevCount + 1); 
-        
+        setWordCount(prevCount => prevCount + 1);    
+  
         
     };
-   
+
     const saveTotalCorrectGuesses = async () => {
       console.log("Save button clicked");
       console.log("Current user:", auth.currentUser)
@@ -154,30 +178,8 @@ const TestLevel = () => {
           setCorrectCount(0);
       }
   };
-  
 
-    const playText = () => {
-        const textToRead = randomWord.trim(); 
-        const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(textToRead);
-        utterance.lang = language;
-        utterance.rate = parseFloat(document.getElementById('speechRate').value);
-        utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
 
-        setSynthesisStatus('Playing...');
-        synth.cancel(); 
-        synth.speak(utterance);
-
-        utterance.onend = () => {
-            setSynthesisStatus('Idle');
-            synth.cancel();
-        };
-
-        utterance.onerror = (event) => {
-            setSynthesisStatus('Error');
-            setFeedback('Error occurred during speech synthesis: ' + event.error);
-        };
-    };
     const resetGame = () => {
         setWordCount(0);
         setRecognizedText('');
@@ -213,9 +215,11 @@ const TestLevel = () => {
           <button onClick={startListening} className="actionButton startButton">
             Start Listening
           </button>
+
           <button onClick={stopListening} className="actionButton stopButton">
             Stop Listening
           </button>
+
           <button onClick={playText} className="actionButton playButton">
             Play Text
           </button>
