@@ -76,6 +76,29 @@ const TestLevel = () => {
         recognition.start();
     }
 
+    const playText = () => {
+      const textToRead = randomWord.trim(); 
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = language;
+      utterance.rate = parseFloat(document.getElementById('speechRate').value);
+      utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
+
+      setSynthesisStatus('Playing...');
+      synth.cancel(); 
+      synth.speak(utterance);
+
+      utterance.onend = () => {
+          setSynthesisStatus('Idle');
+          synth.cancel();
+      };
+
+      utterance.onerror = (event) => {
+          setSynthesisStatus('Error');
+          setFeedback('Error occurred during speech synthesis: ' + event.error);
+      };
+  };
+
     const stopListening = () => {
         recognition.stop();
         const userInput = recognizedText.trim().toLowerCase();
@@ -83,15 +106,16 @@ const TestLevel = () => {
         if (isCorrect) {
             setCorrectCount(prevCount => prevCount + 1);
             setConfirmation('Correct!');
+            
         } else {
             setIncorrectCount(prevCount => prevCount + 1);
             setConfirmation('Incorrect. Try again.');
         }
-        setWordCount(prevCount => prevCount + 1); 
-        
+        setWordCount(prevCount => prevCount + 1);    
+  
         
     };
-   
+
     const saveTotalCorrectGuesses = async () => {
       console.log("Save button clicked");
       console.log("Current user:", auth.currentUser)
@@ -154,30 +178,8 @@ const TestLevel = () => {
           setCorrectCount(0);
       }
   };
-  
 
-    const playText = () => {
-        const textToRead = randomWord.trim(); 
-        const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(textToRead);
-        utterance.lang = language;
-        utterance.rate = parseFloat(document.getElementById('speechRate').value);
-        utterance.pitch = parseFloat(document.getElementById('speechPitch').value);
 
-        setSynthesisStatus('Playing...');
-        synth.cancel(); 
-        synth.speak(utterance);
-
-        utterance.onend = () => {
-            setSynthesisStatus('Idle');
-            synth.cancel();
-        };
-
-        utterance.onerror = (event) => {
-            setSynthesisStatus('Error');
-            setFeedback('Error occurred during speech synthesis: ' + event.error);
-        };
-    };
     const resetGame = () => {
         setWordCount(0);
         setRecognizedText('');
@@ -192,8 +194,12 @@ const TestLevel = () => {
       <>
         <div className="container">
           <div id="totalCorrectGuesses">
-            <h1><TotalCorrectGuesses/></h1>
-            <h1><ShowLevel/></h1>
+            <h4>
+              <TotalCorrectGuesses />
+            </h4>
+            <h4>
+              <ShowLevel />
+            </h4>
           </div>
           <div id="randomWord">{randomWord}</div>
 
@@ -203,15 +209,17 @@ const TestLevel = () => {
             onChange={(e) => setLanguage(e.target.value)}
           >
             <option value="en-US">English (US)</option>
-            <option value="ru">Russian</option>
+            {/* <option value="ru">Russian</option> */}
           </select>
 
           <button onClick={startListening} className="actionButton startButton">
             Start Listening
           </button>
+
           <button onClick={stopListening} className="actionButton stopButton">
             Stop Listening
           </button>
+
           <button onClick={playText} className="actionButton playButton">
             Play Text
           </button>
@@ -227,32 +235,31 @@ const TestLevel = () => {
           <button onClick={NextWord} className="actionButton nextButton">
             Next
           </button>
-
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
-            <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-            <div
-
+          <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
+          <div
             id="confirmation"
             className={
               correctCount > 0 || incorrectCount > 0
