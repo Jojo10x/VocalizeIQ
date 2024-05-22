@@ -75,7 +75,8 @@ select, button {
   color: #ffa500;
 }
 #randomWord {
-  font-size: 64px; /* This change is kept from the "test-level" branch */
+  font-size: clamp(50px, 2vw, 18px);/* This change is kept from the "test-level" branch */
+  color: gray;
 }
 
 h1 {

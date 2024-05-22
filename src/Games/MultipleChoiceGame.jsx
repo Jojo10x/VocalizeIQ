@@ -134,7 +134,7 @@ function MultipleChoiceGame() {
 
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
-        const currentDate = new Date().toISOString();
+        const currentDate = new Date().toLocaleDateString();
 
         try {
           const docRef = doc(db, "Choice", userId);
@@ -145,7 +145,7 @@ function MultipleChoiceGame() {
           if (docSnap.exists()) {
             const data = docSnap.data();
 
-            if ( currentDate) {
+            if (data[currentDate]) {
               newTotalCorrectGuesses = data.totalCorrectGuesses;
             } else {
               newTotalCorrectGuesses = correctCount;
@@ -205,42 +205,45 @@ function MultipleChoiceGame() {
         }
       }, [currentWord, playText]);
 
-      useEffect(() => {
-        const fetchTotalCorrectGuesses = async () => {
-            if (auth.currentUser) {
-                const userId = auth.currentUser.uid;
-                const docRef = doc(db, "Guesses", userId);
+    //   useEffect(() => {
+    //     const fetchTotalCorrectGuesses = async () => {
+    //         if (auth.currentUser) {
+    //             const userId = auth.currentUser.uid;
+    //             const docRef = doc(db, "Guesses", userId);
                 
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const currentTotalCorrectGuesses = data.totalCorrectGuesses;
-                        console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                        setTotalCorrectGuesses(currentTotalCorrectGuesses);
-                    }
-                } catch (error) {
-                    console.error("Error fetching total correct guesses: ", error);
-                }
-            } else {
-                console.warn("User is not authenticated."); 
-            }
-        };
+    //             try {
+    //                 const docSnap = await getDoc(docRef);
+    //                 if (docSnap.exists()) {
+    //                     const data = docSnap.data();
+    //                     const currentTotalCorrectGuesses = data.totalCorrectGuesses;
+    //                     console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
+    //                     setTotalCorrectGuesses(currentTotalCorrectGuesses);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error fetching total correct guesses: ", error);
+    //             }
+    //         } else {
+    //             console.warn("User is not authenticated."); 
+    //         }
+    //     };
 
-        fetchTotalCorrectGuesses();
+    //     fetchTotalCorrectGuesses();
 
      
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                fetchTotalCorrectGuesses(); 
-            }
-        });
+    //     const unsubscribe = auth.onAuthStateChanged(user => {
+    //         if (user) {
+    //             fetchTotalCorrectGuesses(); 
+    //         }
+    //     });
+
 
         return () => unsubscribe();
     }, []); 
 
  
     console.log()
+
+
     
     return (
       <>
@@ -248,9 +251,12 @@ function MultipleChoiceGame() {
         <div className="container">
           <button className="back-button" onClick={goBack}>
             Back
-
-          {/* <label>Random Word:</label> */}
           </button>
+          {/* <label>Random Word:</label> */}
+
+          </button>
+
+
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
               {showWord ? "Hide" : "Show"}
@@ -311,25 +317,26 @@ function MultipleChoiceGame() {
           >
             <h1>{confirmation}</h1>
           </div>
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
@@ -338,9 +345,9 @@ function MultipleChoiceGame() {
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
-          <div id="totalCorrectGuesses">
+          {/* <div id="totalCorrectGuesses">
             Total Correct Guesses: {totalCorrectGuesses}
-          </div>
+          </div> */}
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
@@ -349,19 +356,23 @@ function MultipleChoiceGame() {
           <h1>History</h1>
           <div className="container">
             <div id="history">
-              {Object.entries(gameData).map(([date, data]) => (
-                <div className="history-item" key={date}>
-                  <p>
-                    Date: <span className="colorful-text">{date}</span>
-                  </p>
-                  <p>
-                    Total Correct Guesses:{" "}
-                    <span className="colorful-text">
-                      {data.totalCorrectGuesses}
-                    </span>
-                  </p>
-                </div>
-              ))}
+              {Object.entries(gameData).map(([date, data]) => {
+                const formattedDate = new Date(date).toLocaleDateString();
+                return (
+                  <div className="history-item" key={date}>
+                    <p>
+                      Date:{" "}
+                      <span className="colorful-text">{formattedDate}</span>
+                    </p>
+                    <p>
+                      Total Correct Guesses:{" "}
+                      <span className="colorful-text">
+                        {data.totalCorrectGuesses}
+                      </span>
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

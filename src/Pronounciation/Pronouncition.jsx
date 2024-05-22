@@ -1,10 +1,11 @@
-import {  useState, useEffect } from 'react';
+import {  useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import data from '../Data/data.json';
 import { db , auth} from "../Firebase-config"; 
 import { doc, updateDoc,setDoc, getDoc, } from "firebase/firestore";
+import TotalCorrectGuesses from '../components/TotalCorrectGuesses';
+import ShowLevel from '../components/ShowLevel';
 import '../App.css'
-
+import RandomWord from '../components/RandomWord';
 
 function Prouncition() {
     const [recognizedText, setRecognizedText] = useState('');
@@ -14,7 +15,8 @@ function Prouncition() {
     const [wordCount, setWordCount] = useState(0);
     const [synthesisStatus, setSynthesisStatus] = useState('Idle');
     const [recognitionStatus, setRecognitionStatus] = useState('Idle');
-    const [randomWord, setRandomWord] = useState(0);
+    const [currentWord, setCurrentWord] = useState('');
+    const [triggerUpdate, setTriggerUpdate] = useState(false);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [totalCorrectGuesses, setTotalCorrectGuesses] = useState(0); 
@@ -28,15 +30,6 @@ function Prouncition() {
     recognition.continuous = true;
     recognition.interimResults = true;
 
-    useEffect(() => {
-        if (data && data.words && data.words.length > 0) {
-            const randomIndex = Math.floor(Math.random() * data.words.length);
-            setRandomWord(data.words[randomIndex]);
-        } else {
-            console.error("Data is not in the expected format");
-        }
-    }, []); 
-
     recognition.onstart = () => {
         setRecognitionStatus('Listening...');
     };
@@ -46,6 +39,9 @@ function Prouncition() {
         setRecognizedText(recognized);
         clearTimeout(feedbackTimeout);
         setFeedback('');
+    };
+    const handleRandomWordChange = (word) => {
+        setCurrentWord(word);
     };
 
     recognition.onend = () => {
@@ -68,17 +64,16 @@ function Prouncition() {
     };
 
     const NextWord = ()=>{
-        const randomIndex = Math.floor(Math.random() * data.words.length);
-        setRandomWord(data.words[randomIndex]);
         setRecognizedText('');
         setConfirmation('');
         recognition.start();
+        setTriggerUpdate(prevState => !prevState);
     }
 
     const stopListening = () => {
         recognition.stop();
         const userInput = recognizedText.trim().toLowerCase();
-        const isCorrect = userInput === randomWord.trim().toLowerCase();
+        const isCorrect = userInput === currentWord.trim().toLowerCase();
         if (isCorrect) {
             setCorrectCount(prevCount => prevCount + 1);
             setConfirmation('Correct!');
@@ -90,39 +85,6 @@ function Prouncition() {
         
         
     };
-    useEffect(() => {
-        const fetchTotalCorrectGuesses = async () => {
-            if (auth.currentUser) {
-                const userId = auth.currentUser.uid;
-                const docRef = doc(db, "Guesses", userId);
-                
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const currentTotalCorrectGuesses = data.totalCorrectGuesses;
-                        console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                        setTotalCorrectGuesses(currentTotalCorrectGuesses);
-                    }
-                } catch (error) {
-                    console.error("Error fetching total correct guesses: ", error);
-                }
-            } else {
-                console.warn("User is not authenticated."); 
-            }
-        };
-
-        fetchTotalCorrectGuesses();
-
-     
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                fetchTotalCorrectGuesses(); 
-            }
-        });
-
-        return () => unsubscribe();
-    }, []); 
 
     const saveTotalCorrectGuesses = async () => {
         console.log("Save button clicked");
@@ -165,7 +127,7 @@ function Prouncition() {
         }
     };
     const playText = () => {
-        const textToRead = randomWord.trim(); 
+        const textToRead = currentWord.trim(); 
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(textToRead);
         utterance.lang = language;
@@ -191,19 +153,27 @@ function Prouncition() {
         setRecognizedText('');
         setFeedback('');
         setConfirmation('');
-
-        const randomIndex = Math.floor(Math.random() * data.words.length);
-        setRandomWord(data.words[randomIndex]);
+        setTriggerUpdate(prevState => !prevState);
     };
     console.log()
     
     return (
       <>
-      <h1>Pronunciation</h1>
+        <h1>Pronunciation</h1>
         <div className="container">
-        <div id="totalCorrectGuesses">Total Guesses: <h1>{totalCorrectGuesses}</h1></div> 
-          <label>Random Word:</label>
-          <div id="randomWord">{randomWord}</div>
+          <div id="totalCorrectGuesses">
+            <h1>
+              <TotalCorrectGuesses />
+            </h1>
+            <h1>
+              <ShowLevel />
+            </h1>
+          </div>
+
+          <RandomWord
+            triggerUpdate={triggerUpdate}
+            onRandomWordChange={handleRandomWordChange}
+          />
 
           <label htmlFor="languageSelect">Select Language:</label>
           <select
@@ -211,7 +181,7 @@ function Prouncition() {
             onChange={(e) => setLanguage(e.target.value)}
           >
             <option value="en-US">English (US)</option>
-            <option value="ru">Russian</option>
+            {/* <option value="ru">Russian</option> */}
           </select>
 
           <button onClick={startListening} className="actionButton startButton">
@@ -236,42 +206,54 @@ function Prouncition() {
             Next
           </button>
 
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
-            <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
-            <div id="confirmation" className={correctCount > 0 || incorrectCount > 0 ? (correctCount > 0 ? 'correct' : 'incorrect') : ''}>
-                {confirmation}
-            </div>
+          <div id="incorrectCount">Incorrect Guesses: {incorrectCount}</div>
+          <div
+            id="confirmation"
+            className={
+              correctCount > 0 || incorrectCount > 0
+                ? correctCount > 0
+                  ? "correct"
+                  : "incorrect"
+                : ""
+            }
+          >
+            {confirmation}
+          </div>
           <div id="feedback" style={{ color: "#ffa500" }}>
             {feedback}
           </div>
           <div id="wordCount">Word Count: {wordCount}</div>
-        
+
           <div id="synthesisStatus">Synthesis Status: {synthesisStatus}</div>
           <div id="recognitionStatus">
             Recognition Status: {recognitionStatus}
           </div>
-          <button className="back-button" onClick={goBack}>Back</button>
+          <button className="back-button" onClick={goBack}>
+            Back
+          </button>
         </div>
       </>
     );

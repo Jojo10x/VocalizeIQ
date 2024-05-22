@@ -129,7 +129,7 @@ function Game() {
 
       if (auth.currentUser) {
         const userId = auth.currentUser.uid;
-        const currentDate = new Date().toISOString();
+        const currentDate = new Date().toLocaleDateString();
 
         try {
           const docRef = doc(db, "Game", userId);
@@ -201,40 +201,6 @@ function Game() {
         const randomIndex = Math.floor(Math.random() * data.words.length);
         setRandomWord(data.words[randomIndex]);
     };
-    console.log()
-    useEffect(() => {
-      const fetchTotalCorrectGuesses = async () => {
-          if (auth.currentUser) {
-              const userId = auth.currentUser.uid;
-              const docRef = doc(db, "Guesses", userId);
-              
-              try {
-                  const docSnap = await getDoc(docRef);
-                  if (docSnap.exists()) {
-                      const data = docSnap.data();
-                      const currentTotalCorrectGuesses = data.totalCorrectGuesses;
-                      console.log("Current total correct guesses in Firebase:", currentTotalCorrectGuesses);
-                      setTotalCorrectGuesses(currentTotalCorrectGuesses);
-                  }
-              } catch (error) {
-                  console.error("Error fetching total correct guesses: ", error);
-              }
-          } else {
-              console.warn("User is not authenticated."); 
-          }
-      };
-
-      fetchTotalCorrectGuesses();
-
-   
-      const unsubscribe = auth.onAuthStateChanged(user => {
-          if (user) {
-              fetchTotalCorrectGuesses(); 
-          }
-      });
-
-      return () => unsubscribe();
-  }, []); 
     
     return (
       <>
@@ -246,7 +212,7 @@ function Game() {
           <label>Random Word:</label>
           <div id="randomWord">{randomWord}</div>
 
-          <label htmlFor="languageSelect">Select Language:</label>
+          <label htmlFor="languageSelect">Accent:</label>
           <select
             id="languageSelect"
             onChange={(e) => setAccent(e.target.value)}
@@ -278,25 +244,26 @@ function Game() {
             Next
           </button>
 
-          <label htmlFor="speechRate">Speech Rate:</label>
-          <input
-            type="range"
-            id="speechRate"
-            min="0.5"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
-
-          <label htmlFor="speechPitch">Speech Pitch:</label>
-          <input
-            type="range"
-            id="speechPitch"
-            min="0"
-            max="2"
-            step="0.1"
-            defaultValue="1"
-          />
+          <div>
+            <label htmlFor="speechRate">Speech Rate:</label>
+            <input
+              type="range"
+              id="speechRate"
+              min="0.5"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+            <label htmlFor="speechPitch">Speech Pitch:</label>
+            <input
+              type="range"
+              id="speechPitch"
+              min="0"
+              max="2"
+              step="0.1"
+              defaultValue="1"
+            />
+          </div>
 
           <div id="recognizedText">Recognized Text: {recognizedText}</div>
           <div id="correctCount">Correct Guesses: {correctCount}</div>
@@ -328,20 +295,23 @@ function Game() {
           <h1>History</h1>
           <div className="container">
             <div id="history">
-              {Object.entries(gameData).map(([date, data]) => (
-                <div className="history-item" key={date}>
-                     <p>
-
-                    Date: <span className="colorful-text">{date}</span>
-                  </p>
-                  <p>
-                    Total Correct Guesses:{" "}
-                    <span className="colorful-text">
-                      {data.totalCorrectGuesses}
-                    </span>
-                  </p>
-                </div>
-              ))}
+            {Object.entries(gameData).map(([date, data]) => {
+                const formattedDate = new Date(date).toLocaleDateString();
+                return (
+                  <div className="history-item" key={date}>
+                    <p>
+                      Date:{" "}
+                      <span className="colorful-text">{formattedDate}</span>
+                    </p>
+                    <p>
+                      Total Correct Guesses:{" "}
+                      <span className="colorful-text">
+                        {data.totalCorrectGuesses}
+                      </span>
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
