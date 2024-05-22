@@ -16,6 +16,7 @@ import Game from "./Games/TongueTwisterGame";
 import MultipleChoiceGame from "./Games/MultipleChoiceGame";
 import Instructions from "./Instructions/Instructions";
 import Setttings from "./SettingsPage/Settings";
+import Footer from "./components/Footer/Footer";
 
 const Breadcrumbs = () => {
   const location = useLocation();
@@ -62,6 +63,7 @@ function App() {
           <Route path="/menu/instructions" element={<Instructions />} />
           <Route path="/menu/settings" element={<Setttings />} />
         </Routes>
+        <Footer/>
       </Router>
     </>
   );

@@ -236,10 +236,14 @@ function MultipleChoiceGame() {
     //         }
     //     });
 
-    //     return () => unsubscribe();
-    // }, []);       
 
-    // console.log()
+        return () => unsubscribe();
+    }, []); 
+
+ 
+    console.log()
+
+
     
     return (
       <>
@@ -249,6 +253,10 @@ function MultipleChoiceGame() {
             Back
           </button>
           {/* <label>Random Word:</label> */}
+
+          </button>
+
+
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
               {showWord ? "Hide" : "Show"}

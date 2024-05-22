@@ -1,0 +1,15 @@
+.copyright {
+    p {
+        font-size: 0.95rem;
+    }
+
+    a {
+        color: #000000;
+        opacity: 0.8;
+        text-decoration: none;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
