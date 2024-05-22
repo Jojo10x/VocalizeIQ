@@ -19,7 +19,6 @@ function MultipleChoiceGame() {
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
     const [showWord, setShowWord] = useState(false);
     const navigate = useNavigate();
-    const [showWord, setShowWord] = useState(false);
 
     const currentSet = data[currentSetIndex];
 
@@ -240,11 +239,7 @@ function MultipleChoiceGame() {
         return () => unsubscribe();
     }, []); 
 
-    const toggleWordVisibility = () => {
-      setShowWord(!showWord);
-    };
-      
-
+ 
     console.log()
     
     return (
@@ -255,7 +250,7 @@ function MultipleChoiceGame() {
             Back
 
           {/* <label>Random Word:</label> */}
-
+          </button>
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
               {showWord ? "Hide" : "Show"}
