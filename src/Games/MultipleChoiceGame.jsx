@@ -237,8 +237,8 @@ function MultipleChoiceGame() {
     //     });
 
 
-        return () => unsubscribe();
-    }, []); 
+    //     return () => unsubscribe();
+    // }, []); 
 
  
     console.log()
@@ -252,10 +252,6 @@ function MultipleChoiceGame() {
           <button className="back-button" onClick={goBack}>
             Back
           </button>
-          {/* <label>Random Word:</label> */}
-
-          </button>
-
 
           <div>
             <button onClick={toggleWordVisibility} className="toggleButton">
