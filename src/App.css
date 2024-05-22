@@ -220,6 +220,13 @@ h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #4CAF50;
 }
+@media (max-width: 768px) {
+  .wordButton:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: initial;
+  }
+}
 
 
 .toggleButton {
